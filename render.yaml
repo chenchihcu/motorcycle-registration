@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: motorcycle-registration
+    runtime: python
+    region: singapore
+    plan: free
+    branch: main
+    buildCommand: pip install -r motorcycle_registration/requirements.txt
+    startCommand: gunicorn wsgi:app -b 0.0.0.0:$PORT --workers=2
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.13
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: motorcycle-registration-db
+          property: connectionString
+      - key: PORT
+        value: 10000
+
+databases:
+  - name: motorcycle-registration-db
+    region: singapore
+    plan: free
+    databaseName: motorcycle_registration
+    ipAllowList: []
