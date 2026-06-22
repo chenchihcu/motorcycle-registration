@@ -20,14 +20,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r motorcycle_registration/requirements.txt -q
 
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3.0
-        with:
-          publish-dir: motorcycle_registration
-          production-branch: main
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy from GitHub Actions"
-          enable-commit-comment: false
+        run: |
+          netlify deploy --prod \
+            --dir=motorcycle_registration \
+            --functions=motorcycle_registration/netlify/functions \
+            --message="Deploy from GitHub Actions (${{ github.sha }})"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
