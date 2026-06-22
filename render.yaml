@@ -18,8 +18,7 @@ services:
         fromDatabase:
           name: motorcycle-registration-db
           property: connectionString
-      - key: PORT
-        value: 10000
+
 
 databases:
   - name: motorcycle-registration-db
