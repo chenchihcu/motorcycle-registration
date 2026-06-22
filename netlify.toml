@@ -1,10 +1,7 @@
 [build]
-  command = "echo 'Static site placeholder'"
-  functions = "netlify/functions"
-  publish = "."
-
-[dev]
-  framework = "flask"
+  command = "pip install -r motorcycle_registration/requirements.txt -q"
+  functions = "motorcycle_registration/netlify/functions"
+  publish = "motorcycle_registration"
 
 [[redirects]]
   from = "/static/*"
