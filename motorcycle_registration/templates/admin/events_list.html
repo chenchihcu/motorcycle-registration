@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">活動管理</h3>
+    <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>建立新活動</a>
+</div>
+{% if events %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>活動名稱</th>
+                <th>日期</th>
+                <th>建立者</th>
+                <th>報名人數</th>
+                <th>容量</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.event_date }}</td>
+                <td>{{ event.creator.name }}</td>
+                <td>{{ event.registrations.filter_by(cancelled_at=None).count() }}</td>
+                <td>
+                    {% if event.max_attendees %}
+                        {{ event.max_attendees }} 人
+                    {% else %}
+                        <span class="text-muted">無限制</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('admin.events_edit', event_id=event.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>編輯</a>
+                    <a href="{{ url_for('admin.export_route', event_id=event.id) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-map me-1"></i>路線表</a>
+                    <form method="POST" action="{{ url_for('admin.events_delete', event_id=event.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" data-confirm="確定刪除此活動？此操作無法復原。"><i class="bi bi-trash me-1"></i>刪除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <p class="text-muted">目前沒有任何活動</p>
+    <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary">建立第一個活動</a>
+</div>
+{% endif %}
+{% endblock %}
+

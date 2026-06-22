@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4">管理儀表板</h3>
+<div class="row mb-4">
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card prominent text-center">
+            <div class="card-body">
+                <div class="fs-2 fw-bold">{{ total_events }}</div>
+                <small class="text-muted">總活動數</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card prominent text-center">
+            <div class="card-body">
+                <div class="fs-2 fw-bold">{{ upcoming_events }}</div>
+                <small class="text-muted">即將到來</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card prominent text-center">
+            <div class="card-body">
+                <div class="fs-2 fw-bold">{{ total_users }}</div>
+                <small class="text-muted">總使用者</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card prominent text-center">
+            <div class="card-body">
+                <div class="fs-2 fw-bold">{{ active_regs }}</div>
+                <small class="text-muted">有效報名</small>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 報名趨勢圖表 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-light">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-1"></i>近 30 天報名趨勢</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="registrationChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-light">
+                <h5 class="mb-0">最新活動</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_events %}
+                    {% for event in recent_events %}
+                    <div class="border-bottom py-2">
+                        <a href="{{ url_for('admin.events_edit', event_id=event.id) }}">{{ event.title }}</a>
+                        <small class="text-muted float-end">{{ event.event_date }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">尚無活動</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-light">
+                <h5 class="mb-0">最新公告</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_posts %}
+                    {% for post in recent_posts %}
+                    <div class="border-bottom py-2">
+                        <small>{{ post.content[:50] ~ '...' if post.content|length > 50 else post.content }}</small>
+                        <small class="text-muted float-end">{{ post.created_at.strftime('%m-%d %H:%M') }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">尚無公告</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('admin.events_list') }}" class="btn btn-primary"><i class="bi bi-gear me-1"></i>活動管理</a>
+                    <a href="{{ url_for('admin.events_new') }}" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i>建立活動</a>
+                    <a href="{{ url_for('admin.bulletin') }}" class="btn btn-info text-white"><i class="bi bi-megaphone me-1"></i>公告管理</a>
+                    <a href="{{ url_for('admin.messages') }}" class="btn btn-warning"><i class="bi bi-envelope me-1"></i>訊息管理
+                        {% if unread_messages > 0 %}
+                        <span class="badge bg-danger">{{ unread_messages }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(async function() {
+    try {
+        const res = await fetch('{{ url_for("admin.registration_trends") }}');
+        const data = await res.json();
+
+        const ctx = document.getElementById('registrationChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels.map(function(d) {
+                    const parts = d.split('-');
+                    return parts[1] + '/' + parts[2];
+                }),
+                datasets: [{
+                    label: '報名人數',
+                    data: data.values,
+                    backgroundColor: 'rgba(26, 26, 46, 0.6)',
+                    borderColor: 'rgba(26, 26, 46, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 }
+                    },
+                    x: {
+                        ticks: { maxTicksLimit: 15 }
+                    }
+                }
+            }
+        });
+    } catch(e) {
+        console.warn('Chart load failed:', e);
+    }
+})();
+</script>
+{% endblock %}
+

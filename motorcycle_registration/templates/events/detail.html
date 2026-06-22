@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h3 class="card-title">{{ event.title }}</h3>
+                <p class="text-muted">{{ event.event_date }}</p>
+                <hr>
+                <div class="mb-4">
+                    <h5>活動內容</h5>
+                    <p>{{ event.description or '尚無描述' }}</p>
+                </div>
+                <div class="row g-2 mb-4">
+                    <div class="col-4">
+                        <div class="stat-card">
+                            <i class="bi bi-people fs-4"></i>
+                            <div class="stat-number">{{ total_people }}</div>
+                            <div class="stat-label">已報名人數</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-card">
+                            <i class="bi bi-truck fs-4"></i>
+                            <div class="stat-number">{{ total_vehicles }}</div>
+                            <div class="stat-label">車輛數</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-card">
+                            <i class="bi bi-check-circle fs-4"></i>
+                            <div class="stat-number">{{ event.registrations.filter_by(cancelled_at=None).count() }}</div>
+                            <div class="stat-label">已報名</div>
+                        </div>
+                    </div>
+                </div>
+                {% if event.max_attendees %}
+                <div class="mb-3">
+                    {% set pct = (total_people / event.max_attendees * 100) | round %}
+                    {% set is_full = total_people >= event.max_attendees %}
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>報名進度</span>
+                        <span class="{% if is_full %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                            {{ total_people }} / {{ event.max_attendees }} 人
+                            {% if is_full %}(額滿){% endif %}
+                        </span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar {% if is_full %}bg-danger{% elif pct >= 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             role="progressbar"
+                             style="width: {{ [pct, 100] | min }}%;"
+                             aria-valuenow="{{ total_people }}"
+                             aria-valuemin="0"
+                             aria-valuemax="{{ event.max_attendees }}">
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    {% if user_registered and user_registered.cancelled_at is none %}
+                        <div class="alert alert-success d-flex flex-wrap align-items-center justify-content-between">
+                            <span><i class="bi bi-check-circle me-1"></i>您已報名此活動</span>
+                            <form method="POST" action="{{ url_for('registration.cancel', event_id=event.id) }}" class="mt-2 mt-sm-0 ms-sm-2">
+                                <button type="submit" class="btn btn-danger btn-sm" data-confirm="確定取消報名？取消後將於公告欄留下紀錄"><i class="bi bi-x-circle me-1"></i>取消報名</button>
+                            </form>
+                        </div>
+                    {% elif user_registered and user_registered.cancelled_at is not none %}
+                        <div class="alert alert-warning"><i class="bi bi-info-circle me-1"></i>您已取消此活動報名</div>
+                    {% else %}
+                        {% set is_full = event.max_attendees and total_people >= event.max_attendees %}
+                        {% if is_full %}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle me-1"></i>此活動名額已滿，目前無法報名
+                            </div>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('registration.register', event_id=event.id) }}" class="mb-3">
+                            <div class="row g-2 align-items-end">
+                                <div class="col-6 col-sm-auto">
+                                    <label class="form-label small mb-1">出席人數</label>
+                                    <input type="number" name="attendees_count" value="1" min="1" max="10" class="form-control" style="width:100%">
+                                </div>
+                                <div class="col-6 col-sm-auto">
+                                    <label class="form-label small mb-1 d-none d-sm-block">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-circle me-1"></i>立即報名</button>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2"><i class="bi bi-person me-1"></i>{{ current_user.name }} · <code>{{ current_user.license_plate }}</code></small>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-box-arrow-in-right me-1"></i><a href="{{ url_for('auth.login') }}">登入</a> 後即可報名參加活動
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Google Maps 預覽 -->
+        {% if event.google_maps_embed_url %}
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">路線預覽</h5>
+            </div>
+            <div class="card-body">
+                <div class="ratio ratio-16x9 position-relative">
+                    <div class="spinner-border text-primary position-absolute top-50 start-50" role="status" id="map-spinner-{{ event.id }}">
+                        <span class="visually-hidden">載入中...</span>
+                    </div>
+                    <iframe src="{{ event.google_maps_embed_url }}" allowfullscreen loading="lazy" onload="document.getElementById('map-spinner-{{ event.id }}').style.display='none'"></iframe>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <!-- 路線途經點 -->
+        {% if event.route_waypoints %}
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">路線表</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>序號</th>
+                                <th>地點</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for waypoint in event.route_waypoints.strip().split('\n') %}
+                            {% if waypoint.strip() %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ waypoint.strip() }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 報名者清單 -->
+        {% if attendee_list %}
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-people me-1"></i>報名車友（{{ total_vehicles }} 車）</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>車牌</th>
+                                <th>人數</th>
+                                <th>報名時間</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reg in attendee_list %}
+                            <tr>
+                                <td>{{ reg.user.name }}</td>
+                                <td><code>{{ reg.user.license_plate }}</code></td>
+                                <td>{{ reg.attendees_count }}</td>
+                                <td class="text-muted small">{{ reg.registered_at.strftime('%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h5>活動資訊</h5>
+                <ul class="list-unstyled">
+                    <li><strong>日期：</strong>{{ event.event_date }}</li>
+                    <li><strong>建立者：</strong>{{ event.creator.name }}</li>
+                    <li><strong>建立時間：</strong>{{ event.created_at.strftime('%Y-%m-%d %H:%M') }}</li>
+                </ul>
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('admin.events_edit', event_id=event.id) }}" class="btn btn-outline-primary">編輯活動</a>
+                    <a href="{{ url_for('admin.export_route', event_id=event.id) }}" class="btn btn-outline-secondary">匯出路線表 (CSV)</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

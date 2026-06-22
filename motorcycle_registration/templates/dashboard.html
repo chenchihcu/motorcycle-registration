@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <!-- 左側：公告欄 -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">公告欄</h4>
+                <form method="GET" action="{{ url_for('bulletin.dashboard') }}" class="d-flex">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="q" class="form-control" placeholder="搜尋公告..." value="{{ request.args.get('q', '') }}" style="max-width:180px">
+                        <button type="submit" class="btn btn-light btn-sm"><i class="bi bi-search"></i></button>
+                        {% if request.args.get('q') %}
+                        <a href="{{ url_for('bulletin.dashboard') }}" class="btn btn-light btn-sm"><i class="bi bi-x-circle"></i></a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                <!-- 統計資訊 -->
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <i class="bi bi-people fs-2"></i>
+                            <div class="stat-number">{{ total_people }}</div>
+                            <div class="stat-label">目前報名人數</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <i class="bi bi-truck fs-2"></i>
+                            <div class="stat-number">{{ total_vehicles }}</div>
+                            <div class="stat-label">車輛數量</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 公告分類篩選 -->
+                <ul class="nav nav-pills nav-fill small mb-3" id="bulletinTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-bulletin-filter="all" type="button">全部</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bulletin-filter="manual" type="button">管理員公告</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bulletin-filter="system" type="button">系統通知</button>
+                    </li>
+                </ul>
+                <!-- 公告列表 -->
+                <div class="bulletin-list" id="bulletinList">
+                    {% if posts %}
+                        {% for post in posts %}
+                        <div class="bulletin-post border-bottom py-2 {% if post.post_type == 'system' %}text-muted system-post{% endif %}" data-post-type="{{ post.post_type }}">
+                            <small class="text-muted">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            {% if post.post_type == 'manual' %}
+                            <span class="badge bg-primary small">管理員</span>
+                            {% else %}
+                            <span class="badge bg-secondary small">系統</span>
+                            {% endif %}
+                            <div class="mt-1">{{ post.content }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3" id="emptyBulletin">目前尚無公告</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 右側：即將到來的活動 -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow raised">
+            <div class="card-header bg-dark text-light">
+                <h4 class="mb-0">即將到來的活動</h4>
+            </div>
+            <div class="card-body">
+                {% if upcoming_events %}
+                    {% for event in upcoming_events %}
+                    <div class="mb-3">
+                        <h5><a href="{{ url_for('events.detail', event_id=event.id) }}" class="text-decoration-none">{{ event.title }}</a></h5>
+                        <small class="text-muted">{{ event.event_date }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">目前沒有即將到來的活動</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ url_for('events.list_events') }}" class="btn btn-outline-primary w-100"><i class="bi bi-calendar-event me-1"></i>查看所有活動</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    'use strict';
+    var tabs = document.querySelectorAll('[data-bulletin-filter]');
+    var posts = document.querySelectorAll('.bulletin-post');
+    if (!tabs.length || !posts.length) return;
+
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            var type = this.getAttribute('data-bulletin-filter');
+
+            // 更新 tab active 狀態
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            this.classList.add('active');
+
+            // 篩選公告
+            posts.forEach(function(post) {
+                if (type === 'all' || post.getAttribute('data-post-type') === type) {
+                    post.style.display = '';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
+    });
+})();
+</script>
+{% endblock %}

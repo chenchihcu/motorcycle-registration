@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <h3>{{ event.title }} - 路線預覽</h3>
+        <p class="text-muted">{{ event.event_date }}</p>
+    </div>
+</div>
+{% if event.google_maps_embed_url %}
+<div class="card shadow">
+    <div class="card-body">
+        <div class="ratio ratio-21x9">
+            <iframe src="{{ event.google_maps_embed_url }}" allowfullscreen loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">此活動尚未設定路線資訊</div>
+{% endif %}
+{% if event.route_waypoints %}
+<div class="card shadow mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">路線表</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>序號</th>
+                    <th>地點</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for waypoint in event.route_waypoints.strip().split('\n') %}
+                {% if waypoint.strip() %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ waypoint.strip() }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+<div class="mt-3">
+    <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-outline-primary">返回活動詳情</a>
+</div>
+{% endblock %}

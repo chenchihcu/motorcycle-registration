@@ -1,0 +1,16 @@
+{
+  "name": "重機車隊報名系統",
+  "short_name": "車隊報名",
+  "description": "重機車隊活動報名與管理平台",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "/static/images/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

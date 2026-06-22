@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-people me-1"></i>車隊成員</h3>
+
+{% if members %}
+<div class="card shadow">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>車牌</th>
+                        <th>加入日期</th>
+                        <th>角色</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td>
+                            {{ member.name }}
+                            {% if member == current_user %}
+                            <span class="badge bg-info text-dark ms-1">我</span>
+                            {% endif %}
+                        </td>
+                        <td><code>{{ member.license_plate }}</code></td>
+                        <td class="text-muted">{{ member.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if member.role == 'admin' %}
+                            <span class="badge bg-danger">管理員</span>
+                            {% else %}
+                            <span class="badge bg-secondary">成員</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-people display-3 text-muted"></i>
+    <p class="text-muted mt-3">目前尚無成員</p>
+</div>
+{% endif %}
+{% endblock %}

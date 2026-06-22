@@ -1,0 +1,33 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+*.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite databases (production data)
+*.db
+*.sqlite3
+
+# OpenCode / agent tooling metadata
+.omo/
+.codegraph
+.playwright-mcp/
+
+# Netlify
+.netlify/
+
+# Project-specific ignores
+__pycache__/

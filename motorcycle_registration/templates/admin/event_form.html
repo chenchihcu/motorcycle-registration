@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4">{{ title }}</h3>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control", placeholder="請輸入活動名稱") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.event_date.label(class="form-label") }}
+                        {{ form.event_date(class="form-control", type="date") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.max_attendees.label(class="form-label") }}
+                        {{ form.max_attendees(class="form-control", type="number", min="1", placeholder="留空表示不限制人數") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="5", placeholder="請輸入活動內容概述") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.google_maps_embed_url.label(class="form-label") }}
+                        {{ form.google_maps_embed_url(class="form-control", rows="3", placeholder="貼上 Google Maps 嵌入 iframe 的 src 網址") }}
+                        <small class="text-muted">在 Google Maps 上規劃路線 → 分享 → 嵌入地圖 → 複製 iframe 中的 src 網址</small>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.route_waypoints.label(class="form-label") }}
+                        <div id="waypoint-list">
+                            {% if form.route_waypoints.data %}
+                                {% for wp in form.route_waypoints.data.strip().split('\n') %}
+                                {% if wp.strip() %}
+                                <div class="input-group mb-2 waypoint-row">
+                                    <input type="text" class="form-control" name="waypoints[]" value="{{ wp.strip() }}" placeholder="輸入途經點">
+                                    <button type="button" class="btn btn-outline-danger waypoint-remove"><i class="bi bi-dash-lg"></i></button>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
+                            <div class="input-group mb-2 waypoint-row">
+                                <input type="text" class="form-control" name="waypoints[]" placeholder="輸入途經點（如：臺北車站）">
+                                <button type="button" class="btn btn-outline-danger waypoint-remove"><i class="bi bi-dash-lg"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <button type="button" class="btn btn-outline-success btn-sm mt-1" id="add-waypoint"><i class="bi bi-plus-lg me-1"></i>新增途經點</button>
+                        <input type="hidden" name="route_waypoints" id="route_waypoints_hidden" value="{{ form.route_waypoints.data or '' }}">
+                        <small class="text-muted d-block mt-1">可動態新增/刪除途經點，儲存時自動合併</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('admin.events_list') }}" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i>取消</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    'use strict';
+
+    var list = document.getElementById('waypoint-list');
+    var hidden = document.getElementById('route_waypoints_hidden');
+
+    // 新增途經點
+    document.getElementById('add-waypoint').addEventListener('click', function() {
+        var row = document.createElement('div');
+        row.className = 'input-group mb-2 waypoint-row';
+        row.innerHTML =
+            '<input type="text" class="form-control" name="waypoints[]" placeholder="輸入途經點">' +
+            '<button type="button" class="btn btn-outline-danger waypoint-remove"><i class="bi bi-dash-lg"></i></button>';
+        list.appendChild(row);
+        row.querySelector('.waypoint-remove').addEventListener('click', function() {
+            row.remove();
+        });
+    });
+
+    // 刪除途經點（委派）
+    list.addEventListener('click', function(e) {
+        var btn = e.target.closest('.waypoint-remove');
+        if (btn) {
+            btn.closest('.waypoint-row').remove();
+        }
+    });
+
+    // 送出前將動態列表轉換為 \n 分隔字串
+    var form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+        var inputs = list.querySelectorAll('input[name="waypoints[]"]');
+        var lines = [];
+        inputs.forEach(function(inp) {
+            var val = inp.value.trim();
+            if (val) lines.push(val);
+        });
+        hidden.value = lines.join('\n');
+    });
+})();
+</script>
+{% endblock %}
+

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4">訊息管理</h3>
+{% if messages %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>狀態</th>
+                <th>寄件者</th>
+                <th>主旨</th>
+                <th>內容</th>
+                <th>日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for msg in messages %}
+            <tr class="{% if not msg.is_read %}fw-bold{% endif %}">
+                <td>
+                    {% if msg.is_read %}
+                    <span class="badge bg-secondary">已讀</span>
+                    {% else %}
+                    <span class="badge bg-danger">未讀</span>
+                    {% endif %}
+                </td>
+                <td>{{ msg.user.name }}</td>
+                <td>{{ msg.subject or '無主旨' }}</td>
+                <td>{{ msg.content[:50] ~ '...' if msg.content|length > 50 else msg.content }}</td>
+                <td>{{ msg.created_at.strftime('%m-%d %H:%M') }}</td>
+                <td>
+                    <div class="d-flex gap-1">
+                    {% if not msg.is_read %}
+                    <form method="POST" action="{{ url_for('admin.messages_read', msg_id=msg.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check2-all me-1"></i>標記已讀</button>
+                    </form>
+                    {% endif %}
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#replyForm-{{ msg.id }}">
+                        <i class="bi bi-reply me-1"></i>回覆
+                    </button>
+                    </div>
+                    <div class="collapse mt-2" id="replyForm-{{ msg.id }}">
+                        <form method="POST" action="{{ url_for('admin.messages_reply', msg_id=msg.id) }}">
+                            <div class="input-group input-group-sm">
+                                <textarea name="content" class="form-control" rows="2" placeholder="輸入回覆內容..." required></textarea>
+                                <button type="submit" class="btn btn-primary btn-sm">送出</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% if msg.replies.count() > 0 %}
+                    <div class="mt-2 small text-muted">
+                        <i class="bi bi-chat-dots me-1"></i>{{ msg.replies.count() }} 則回覆
+                        <button type="button" class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#replies-{{ msg.id }}">檢視</button>
+                        <div class="collapse mt-1" id="replies-{{ msg.id }}">
+                            {% for reply in msg.replies %}
+                            <div class="border-start border-primary border-2 ps-2 mb-1">
+                                <small>{{ reply.created_at.strftime('%m-%d %H:%M') }} - {{ reply.content }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <p class="text-muted">目前沒有收到任何訊息</p>
+</div>
+{% endif %}
+{% endblock %}
+

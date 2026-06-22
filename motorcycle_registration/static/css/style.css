@@ -1,0 +1,464 @@
+/* ============================================================
+   重機車隊報名系統 — 設計系統樣式表
+   主題：沈穩深色系（明亮背景 + 深色導覽/按鈕/頁腳）
+   Token 來源：DESIGN.md v1.0
+   ============================================================ */
+
+/* ---------- 1. 設計 Token (CSS 變數) ---------- */
+:root {
+    /* Primary */
+    --color-primary: #1a1a2e;
+    --color-primary-hover: #0f0f1e;
+    --color-primary-active: #070710;
+    --color-primary-disabled: #6c6c80;
+    --color-primary-surface: #2c2c3e;
+
+    /* Surface */
+    --color-surface: #ffffff;
+    --color-surface-secondary: #f5f5f5;
+
+    /* Text */
+    --color-text: #222222;
+    --color-text-muted: #666666;
+    --color-text-on-primary: #ffffff;
+
+    /* Borders & Accent */
+    --color-border: #e0e0e0;
+    --color-accent: #a0a0a0;
+
+    /* Semantic */
+    --color-success: #198754;
+    --color-danger: #dc3545;
+    --color-warning: #ffc107;
+    --color-info: #0dcaf0;
+
+    /* Typography */
+    --font-family: -apple-system, "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    --font-size-2xl: 1.75rem;
+    --font-size-xl: 1.5rem;
+    --font-size-lg: 1.25rem;
+    --font-size-md: 1rem;
+    --font-size-sm: 0.875rem;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.10);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.10);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.12);
+
+    /* Radius */
+    --radius-button: 6px;
+    --radius-card: 8px;
+    --radius-input: 4px;
+    --radius-badge: 12px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* ---------- 2. 基礎全域 ---------- */
+body {
+    background-color: var(--color-surface-secondary);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main { flex: 1; }
+a { color: var(--color-primary); transition: color var(--transition-fast); }
+a:hover { color: var(--color-primary-hover); }
+
+/* ---------- 3. 導覽列 ---------- */
+.navbar.bg-dark {
+    background-color: var(--color-primary) !important;
+    border-bottom: 2px solid var(--color-accent);
+}
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: var(--font-size-lg);
+    transition: opacity var(--transition-fast);
+}
+.navbar-brand:hover { opacity: 0.85; }
+
+/* 導覽連結: hover / active */
+.navbar .nav-link {
+    color: rgba(255,255,255,0.75);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+    border-radius: var(--radius-input);
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: #fff;
+    background-color: rgba(255,255,255,0.10);
+}
+.navbar .nav-link.active {
+    color: #fff !important;
+    background-color: rgba(255,255,255,0.15);
+    font-weight: 600;
+}
+
+/* ---------- 4. 卡片 ---------- */
+/* 基礎：無陰影 */
+.card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+/* Level 1 — 一般內容卡片 (登入、側欄) */
+.card.raised { box-shadow: var(--shadow-sm); }
+/* Level 2 — Bootstrap 預設 shadow (主要內容) */
+.card.shadow { box-shadow: var(--shadow-md) !important; }
+/* Level 3 — 最突出卡片 (儀表板統計) */
+.card.prominent { box-shadow: var(--shadow-lg); }
+
+/* 有連結之卡片 hover 浮起效果 (活動列表、儀表板) */
+.card.card-hover:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* 卡片 header（深色風格） */
+.card-header.bg-dark {
+    background-color: var(--color-primary-surface) !important;
+}
+.card-header h4, .card-header h5 {
+    color: var(--color-text-on-primary);
+    font-weight: 600;
+}
+
+/* ---------- 5. 按鈕 ---------- */
+.btn {
+    border-radius: var(--radius-button);
+    transition: all var(--transition-fast);
+    font-weight: 500;
+}
+
+/* Primary */
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+}
+.btn-primary:active {
+    background-color: var(--color-primary-active) !important;
+    border-color: var(--color-primary-active) !important;
+}
+.btn-primary:disabled {
+    background-color: var(--color-primary-disabled);
+    border-color: var(--color-primary-disabled);
+    opacity: 0.6;
+}
+
+/* Outline Primary */
+.btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+/* Success */
+.btn-success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+}
+.btn-outline-success {
+    color: var(--color-success);
+    border-color: var(--color-success);
+}
+.btn-outline-success:hover {
+    background-color: var(--color-success);
+    color: #fff;
+}
+
+/* Danger */
+.btn-danger {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+.btn-outline-danger {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+.btn-outline-danger:hover {
+    background-color: var(--color-danger);
+    color: #fff;
+}
+
+/* Warning */
+.btn-warning {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-text);
+}
+.btn-outline-warning {
+    color: #cca307;
+    border-color: var(--color-warning);
+}
+.btn-outline-warning:hover {
+    background-color: var(--color-warning);
+    color: var(--color-text);
+}
+
+/* Info */
+.btn-info {
+    background-color: var(--color-info);
+    border-color: var(--color-info);
+}
+.btn-outline-info {
+    color: #0aa2c0;
+    border-color: var(--color-info);
+}
+.btn-outline-info:hover {
+    background-color: var(--color-info);
+    color: #000;
+}
+
+/* Link */
+.btn-link {
+    color: var(--color-primary);
+}
+
+/* ---------- 6. 表單 ---------- */
+.form-control:focus, .form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(26,26,46,0.20);
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 0.7;
+}
+.form-label {
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+/* Validation states */
+.was-validated .form-control:valid:focus,
+.form-control.is-valid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(25,135,84,0.20);
+}
+.was-validated .form-control:invalid:focus,
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.20);
+}
+
+/* ---------- 7. 表格 ---------- */
+.table thead th {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-primary-hover);
+}
+.table tbody tr {
+    transition: background-color var(--transition-fast);
+}
+.table tbody tr:hover {
+    background-color: rgba(26,26,46,0.06);
+}
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: rgba(26,26,46,0.03);
+    color: var(--color-text);
+}
+
+/* ---------- 8. Toast 浮動通知 (Flash 訊息) ---------- */
+.toast-container {
+    position: fixed;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 1060;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-width: 400px;
+}
+.toast-notification {
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-md) var(--space-lg);
+    color: #fff;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-sm);
+    animation: toastSlideIn var(--transition-normal) ease forwards;
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+.toast-notification.toast-hiding {
+    opacity: 0;
+    transform: translateX(40px);
+}
+.toast-notification .toast-close {
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.7;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.toast-notification .toast-close:hover { opacity: 1; }
+
+.toast-notification.success { background-color: var(--color-success); }
+.toast-notification.error   { background-color: var(--color-danger); }
+.toast-notification.warning { background-color: var(--color-warning); color: var(--color-text); }
+.toast-notification.info    { background-color: var(--color-info); color: #000; }
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(50px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ---------- 9. 公告欄 ---------- */
+.bulletin-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+.bulletin-post {
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-sm) 0;
+    transition: background-color var(--transition-fast);
+}
+.bulletin-post:hover {
+    background-color: rgba(26,26,46,0.03);
+}
+.bulletin-post.system-post {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* ---------- 10. 統計卡片 ---------- */
+.stat-card {
+    border-radius: var(--radius-card);
+    padding: var(--space-md);
+    text-align: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    transition: box-shadow var(--transition-normal);
+}
+.stat-card:hover { box-shadow: var(--shadow-sm); }
+.stat-card .stat-number {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+.stat-card .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--space-xs);
+}
+
+/* ---------- 11. 分頁 ---------- */
+.page-link {
+    color: var(--color-primary);
+    transition: all var(--transition-fast);
+}
+.page-link:hover {
+    color: var(--color-primary-hover);
+    background-color: rgba(26,26,46,0.05);
+}
+.page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+/* ---------- 12. 頁腳 ---------- */
+.footer {
+    background-color: var(--color-primary) !important;
+    border-top: 2px solid var(--color-accent);
+    padding: var(--space-md) 0;
+}
+.footer small { color: rgba(255,255,255,0.70); }
+
+/* ---------- 13. Badge ---------- */
+.badge {
+    border-radius: var(--radius-badge);
+    font-weight: 500;
+}
+
+/* ---------- 14. 載入狀態（Loading Indicators） ---------- */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+.btn-loading::after {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: var(--space-sm);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: btnSpinner 0.6s linear infinite;
+    vertical-align: middle;
+}
+@keyframes btnSpinner {
+    to { transform: rotate(360deg); }
+}
+
+/* 全域載入遮罩 */
+.overlay-loading {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(255,255,255,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    backdrop-filter: blur(2px);
+    animation: overlayFadeIn 0.2s ease;
+}
+.overlay-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: btnSpinner 0.6s linear infinite;
+}
+.overlay-loading .overlay-text {
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---------- 15. 響應式 ---------- */
+@media (max-width: 768px) {
+    :root {
+        --font-size-2xl: 1.4rem;
+        --font-size-xl: 1.25rem;
+        --font-size-lg: 1.1rem;
+    }
+    .card-title { font-size: var(--font-size-lg); }
+    h3 { font-size: var(--font-size-xl); }
+    .toast-container {
+        left: var(--space-sm);
+        right: var(--space-sm);
+        max-width: none;
+    }
+}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-calendar-check me-1"></i>我的活動</h3>
+
+{% if not active and not history %}
+<div class="text-center py-5">
+    <i class="bi bi-calendar-plus display-3 text-muted"></i>
+    <p class="text-muted mt-3 mb-4">您目前還沒有任何報名紀錄</p>
+    <a href="{{ url_for('events.list_events') }}" class="btn btn-primary">
+        <i class="bi bi-eye me-1"></i>瀏覽活動
+    </a>
+</div>
+{% else %}
+
+<!-- 進行中報名 -->
+{% if active %}
+<div class="card shadow mb-4">
+    <div class="card-header bg-dark text-light">
+        <h5 class="mb-0"><i class="bi bi-check-circle me-1"></i>進行中報名</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>活動名稱</th>
+                        <th>活動日期</th>
+                        <th>出席人數</th>
+                        <th>狀態</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in active %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('events.detail', event_id=reg.event.id) }}">{{ reg.event.title }}</a>
+                        </td>
+                        <td>{{ reg.event.event_date }}</td>
+                        <td>{{ reg.attendees_count }} 人</td>
+                        <td><span class="badge bg-success">已報名</span></td>
+                        <td>
+                            <form method="POST" action="{{ url_for('registration.cancel', event_id=reg.event.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        data-confirm="確定取消「{{ reg.event.title }}」的報名？取消後將於公告欄留下紀錄"
+                                        data-confirm-class="btn-danger">
+                                    <i class="bi bi-x-circle me-1"></i>取消
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 歷史紀錄 -->
+{% if history %}
+<div class="card shadow">
+    <div class="card-header bg-dark text-light">
+        <h5 class="mb-0"><i class="bi bi-clock-history me-1"></i>歷史紀錄</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>活動名稱</th>
+                        <th>活動日期</th>
+                        <th>狀態</th>
+                        <th>取消原因</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in history %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('events.detail', event_id=reg.event.id) }}">{{ reg.event.title }}</a>
+                        </td>
+                        <td>{{ reg.event.event_date }}</td>
+                        <td>
+                            {% if reg.cancelled_at %}
+                            <span class="badge bg-danger">已取消</span>
+                            {% else %}
+                            <span class="badge bg-secondary">已結束</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted">{{ reg.cancellation_reason or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+{% endblock %}
