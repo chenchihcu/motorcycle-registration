@@ -14,4 +14,4 @@
   status = 200
 
 [build.environment]
-  PYTHON_VERSION = "3.14"
+  PYTHON_VERSION = "3.12"
