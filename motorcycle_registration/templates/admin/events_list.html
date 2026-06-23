@@ -23,7 +23,8 @@
         <tbody>
             {% for event in events %}
             {% set is_past = event.effective_start < now %}
-            {% set is_full = event.max_attendees and event.registrations.filter_by(cancelled_at=None).count() >= event.max_attendees %}
+            {% set reg_count = event.registrations.filter_by(cancelled_at=None).count() %}
+            {% set is_full = event.max_attendees and reg_count >= event.max_attendees %}
             <tr>
                 <td>{{ event.title }}</td>
                 <td>{{ event.effective_start }}{% if event.duration_days > 1 %} ~ {{ event.effective_end }}{% endif %}</td>
@@ -37,7 +38,7 @@
                     {% endif %}
                 </td>
                 <td>{{ event.creator.name }}</td>
-                <td>{{ event.registrations.filter_by(cancelled_at=None).count() }}</td>
+                <td>{{ reg_count }}</td>
                 <td>
                     {% if event.max_attendees %}
                         {{ event.max_attendees }} 人
@@ -61,8 +62,8 @@
 <div class="d-md-none">
     {% for event in events %}
     {% set is_past = event.effective_start < now %}
-    {% set is_full = event.max_attendees and event.registrations.filter_by(cancelled_at=None).count() >= event.max_attendees %}
     {% set reg_count = event.registrations.filter_by(cancelled_at=None).count() %}
+    {% set is_full = event.max_attendees and reg_count >= event.max_attendees %}
     <div class="card shadow-sm mb-3">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">

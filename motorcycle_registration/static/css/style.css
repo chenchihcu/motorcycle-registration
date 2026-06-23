@@ -30,6 +30,9 @@
     --color-primary-action: #3a4d6b;
     --color-primary-action-hover: #2c3d59;
     --color-primary-action-active: #1f2d45;
+    /* 漸層亮端：白字對比 ≈ 4.8:1，達 WCAG AA（一般文字 4.5:1） */
+    --color-primary-action-light: #3576b0;
+    --gradient-primary-action: linear-gradient(135deg, var(--color-primary-action), var(--color-primary-action-light));
     --color-secondary-action: #5a6b7c;
     --color-secondary-action-hover: #4a5b6c;
     --color-selection: rgba(58,77,107,0.10);
@@ -138,13 +141,6 @@ a:hover { color: var(--color-primary-action-hover); }
     font-weight: 600;
 }
 
-/* 導覽列在 lg→xl 中寬度區間更早收合為 hamburger */
-@media (max-width: 1199.98px) {
-    .navbar .navbar-nav {
-        gap: 0;
-    }
-}
-
 /* ---------- 4. 卡片 ---------- */
 /* 基礎：無陰影 */
 .card {
@@ -181,14 +177,14 @@ a:hover { color: var(--color-primary-action-hover); }
     font-weight: 500;
 }
 
-/* Primary — 使用山色漸層凸顯主要行動 */
+/* Primary — 使用山色漸層凸顯主要行動（亮端已調暗以確保白字對比） */
 .btn-primary {
-    background: var(--gradient-mountain);
+    background: var(--gradient-primary-action);
     border-color: var(--color-primary-action);
     font-weight: 600;
 }
 .btn-primary:hover, .btn-primary:focus {
-    background: linear-gradient(135deg, var(--color-primary-action-hover), #3a7abd);
+    background: linear-gradient(135deg, var(--color-primary-action-hover), var(--color-primary-action));
     border-color: var(--color-primary-action-hover);
 }
 .btn-primary:active {
@@ -433,7 +429,7 @@ a:hover { color: var(--color-primary-action-hover); }
     background-color: var(--color-selection);
 }
 .page-item.active .page-link {
-    background: var(--gradient-mountain);
+    background: var(--gradient-primary-action);
     border-color: var(--color-primary-action);
     font-weight: 600;
 }
@@ -725,7 +721,7 @@ body.nature-bg {
 /* ---------- 16j. 分頁 hover 漸層 ---------- */
 .page-link.page-nature-hover:hover,
 .page-item:not(.active) .page-link:hover {
-    background: var(--gradient-mountain);
+    background: var(--gradient-primary-action);
     color: #fff;
     border-color: var(--color-nature-mountain);
 }
@@ -757,7 +753,7 @@ body.nature-bg {
 
 /* ---------- 16m. Badge 自然色點綴 ---------- */
 .badge.bg-primary {
-    background: var(--gradient-mountain) !important;
+    background: var(--gradient-primary-action) !important;
 }
 .badge.bg-success {
     background: linear-gradient(135deg, var(--color-nature-forest), var(--color-nature-plant)) !important;

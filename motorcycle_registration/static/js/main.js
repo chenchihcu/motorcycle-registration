@@ -132,16 +132,20 @@
         if (!backBtn) return;
 
         backBtn.addEventListener('click', function (e) {
-            e.preventDefault();
+            // 同站來源才攔截做 history.back()；否則放行 href（儀表板），
+            // 未載入 JS 時 href 也能正常運作（漸進增強）。
+            var fallback = backBtn.getAttribute('href') || '/';
             try {
                 if (document.referrer && new URL(document.referrer).origin === location.origin) {
+                    e.preventDefault();
                     history.back();
                 } else {
-                    // 無 referrer 或來自外部：導向儀表板
-                    window.location.href = backBtn.getAttribute('data-fallback') || '/';
+                    e.preventDefault();
+                    window.location.href = fallback;
                 }
             } catch (_) {
-                window.location.href = backBtn.getAttribute('data-fallback') || '/';
+                e.preventDefault();
+                window.location.href = fallback;
             }
         });
     }
