@@ -11,6 +11,19 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        # 自動建立預設管理員（如尚未存在）
+        from werkzeug.security import generate_password_hash
+        from models import User
+        if not User.query.filter_by(username='admin').first():
+            admin = User(
+                username='admin',
+                password_hash=generate_password_hash('admin123'),
+                name='管理員',
+                license_plate='ADMIN-001',
+                role='admin',
+            )
+            db.session.add(admin)
+            db.session.commit()
 
     from routes.auth import auth_bp, init_login_manager
     from routes.events import events_bp
