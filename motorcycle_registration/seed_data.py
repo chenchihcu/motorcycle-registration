@@ -45,15 +45,17 @@ TEST_USERS = [
 ]
 
 
-def seed():
-    app = create_app()
+def seed(app=None):
+    """建立測試資料。可傳入已初始化 Flask app，否則自動建立。"""
+    if app is None:
+        app = create_app()
     with app.app_context():
         # 清理舊資料
         Registration.query.delete()
         Event.query.delete()
         User.query.filter(User.role != "admin").delete()
         db.session.commit()
-        print("✅ 已清除舊資料")
+        print("[OK] 已清除舊資料")
 
         # 建立測試使用者
         users = []
@@ -68,7 +70,7 @@ def seed():
             db.session.add(u)
             users.append(u)
         db.session.commit()
-        print(f"✅ 建立 {len(users)} 位測試使用者 (密碼: test1234)")
+        print(f"[OK] 建立 {len(users)} 位測試使用者 (密碼: test1234)")
 
         admin = User.query.filter_by(username="admin").first()
 
@@ -94,7 +96,7 @@ def seed():
             db.session.add(ev)
             events.append(ev)
         db.session.commit()
-        print(f"✅ 建立 {len(events)} 個活動 (10 過去, 10 未來)")
+        print(f"[OK] 建立 {len(events)} 個活動 (10 過去, 10 未來)")
 
         # 建立報名資料
         reg_count = 0
@@ -103,23 +105,93 @@ def seed():
             num_vehicles = random.randint(10, 40)
             selected_users = random.sample(users, min(num_vehicles, len(users)))
 
+            used_ips = set()
             for u in selected_users:
                 # 每人 1-3 位出席
                 attendees = random.choices([1, 1, 1, 1, 1, 2, 2, 3], k=1)[0]
+                # 隨機 IP 避免 uq_event_ip 衝突
+                ip = f"10.0.0.{random.randint(2, 254)}"
+                while ip in used_ips:
+                    ip = f"10.0.0.{random.randint(2, 254)}"
+                used_ips.add(ip)
                 reg = Registration(
                     event_id=ev.id,
                     user_id=u.id,
                     attendees_count=attendees,
-                    ip_address="127.0.0.1",
+                    ip_address=ip,
                 )
                 db.session.add(reg)
                 reg_count += 1
         db.session.commit()
-        print(f"✅ 建立 {reg_count} 筆報名資料")
+        print(f"[OK] 建立 {reg_count} 筆報名資料")
 
-        print("\n🎉 資料建立完成！")
+        print("\n=== 資料建立完成！ ===")
         print(f"   測試帳號密碼: test01 ~ test05 / test1234")
         print(f"   管理員: admin / admin123")
+
+
+def seed_with_current_app():
+    """供 create_app() 呼叫版：不使用 app context，直接操作 db.session"""
+    # 清理舊資料
+    Registration.query.delete()
+    Event.query.delete()
+    User.query.filter(User.role != "admin").delete()
+    db.session.commit()
+
+    # 建立測試使用者
+    users = []
+    for i, t in enumerate(TEST_USERS, 1):
+        u = User(
+            username=f"test{i:02d}",
+            password_hash=generate_password_hash("test1234"),
+            name=t["name"],
+            license_plate=t["plate"],
+            role="user",
+        )
+        db.session.add(u)
+        users.append(u)
+    db.session.commit()
+
+    admin = User.query.filter_by(username="admin").first()
+    today = date.today()
+    events = []
+    for i, tmpl in enumerate(EVENT_TEMPLATES):
+        if i < 10:
+            d = today - timedelta(days=random.randint(5, 90))
+        else:
+            d = today + timedelta(days=random.randint(7, 120))
+        ev = Event(
+            title=tmpl["title"],
+            description=tmpl["desc"],
+            event_date=d,
+            max_attendees=60,
+            max_vehicles=40,
+            created_by=admin.id,
+        )
+        db.session.add(ev)
+        events.append(ev)
+    db.session.commit()
+
+    reg_count = 0
+    for ev in events:
+        num_vehicles = random.randint(10, 40)
+        selected_users = random.sample(users, min(num_vehicles, len(users)))
+        used_ips = set()
+        for u in selected_users:
+            attendees = random.choices([1, 1, 1, 1, 1, 2, 2, 3], k=1)[0]
+            ip = f"10.0.0.{random.randint(2, 254)}"
+            while ip in used_ips:
+                ip = f"10.0.0.{random.randint(2, 254)}"
+            used_ips.add(ip)
+            reg = Registration(
+                event_id=ev.id,
+                user_id=u.id,
+                attendees_count=attendees,
+                ip_address=ip,
+            )
+            db.session.add(reg)
+            reg_count += 1
+    db.session.commit()
 
 
 if __name__ == "__main__":
