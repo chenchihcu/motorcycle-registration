@@ -13,7 +13,7 @@ events_bp = Blueprint("events", __name__, url_prefix="/events")
 def list_events():
     page = request.args.get("page", 1, type=int)
     q = request.args.get("q", "").strip()
-    status = request.args.get("status", "all").strip()
+    status = request.args.get("status", "upcoming").strip()
 
     today = date.today()
     query = Event.query

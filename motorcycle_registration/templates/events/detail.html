@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-4">
                         <div class="stat-card nature-accent nature-accent-forest">
-                            <i class="bi bi-truck fs-4"></i>
+                            <i class="bi bi-motorcycle fs-4"></i>
                             <div class="stat-number">{{ total_vehicles }}</div>
                             <div class="stat-label">車輛數</div>
                         </div>
@@ -83,8 +83,8 @@
                     {% if user_registered and user_registered.cancelled_at is none %}
                         <div class="alert alert-success d-flex flex-wrap align-items-center justify-content-between">
                             <span><i class="bi bi-check-circle me-1"></i>您已報名此活動</span>
-                            <form method="POST" action="{{ url_for('registration.cancel', event_id=event.id) }}" class="mt-2 mt-sm-0 ms-sm-2">
-                                <button type="submit" class="btn btn-danger btn-sm" data-confirm="確定取消報名？取消後將於公告欄留下紀錄"><i class="bi bi-x-circle me-1"></i>取消報名</button>
+                            <form method="POST" action="{{ url_for('registration.cancel', event_id=event.id) }}" class="mt-2 mt-sm-0 ms-sm-2" id="cancelForm-{{ event.id }}">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="showCancelFeeModal(document.getElementById('cancelForm-{{ event.id }}'))"><i class="bi bi-x-circle me-1"></i>取消報名</button>
                             </form>
                         </div>
                     {% elif user_registered and user_registered.cancelled_at is not none %}

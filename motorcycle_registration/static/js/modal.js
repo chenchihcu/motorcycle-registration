@@ -166,6 +166,32 @@
         });
     }
 
+    /**
+     * 顯示活動取消費用說明 + 確認對話框
+     * @param {HTMLFormElement} form - 要提交的取消表單
+     */
+    window.showCancelFeeModal = function (form) {
+        if (!form) return;
+        var feeMsg =
+            '<div class="text-start">' +
+            '<div class="alert alert-warning py-2 mb-2 small">' +
+            '<i class="bi bi-exclamation-triangle-fill me-1"></i><strong>報名取消費用說明</strong>' +
+            '</div>' +
+            '<p>本活動並非商業營利行為，而是車友間基於共同興趣所舉辦之聚會活動，因此所有代訂、代付與協調安排，皆以誠信為基礎。</p>' +
+            '<p class="mb-1">請大家互相尊重，也共同維護良好的車友活動文化。感謝配合。</p>' +
+            '</div>';
+
+        window.showConfirmModal(feeMsg, {
+            htmlMessage: true,
+            confirmText: '確認取消報名',
+            confirmClass: 'btn-danger'
+        }).then(function (confirmed) {
+            if (confirmed) {
+                form.submit();
+            }
+        });
+    };
+
     // DOM 載入後執行
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () {

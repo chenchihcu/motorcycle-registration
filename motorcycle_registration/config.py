@@ -11,7 +11,7 @@ class Config:
     WTF_CSRF_ENABLED = True
     SUPABASE_URL = os.getenv('SUPABASE_URL', '')
     SUPABASE_KEY = os.getenv('SUPABASE_KEY', '')
-    APP_NAME = '重機車隊報名系統'
+    APP_NAME = '漢堡車隊報名系統'
     APP_LANG = 'zh-Hant'
     ITEMS_PER_PAGE = 20
 

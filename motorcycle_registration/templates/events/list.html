@@ -16,14 +16,8 @@
 </form>
 
 <!-- Tab 切換 -->
-{% set current_status = request.args.get('status', 'all') %}
+{% set current_status = request.args.get('status', 'upcoming') %}
 <ul class="nav nav-pills mb-4" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link {% if current_status == 'all' %}active{% endif %}"
-           href="{{ url_for('events.list_events', q=request.args.get('q',''), status='all') }}">
-            <i class="bi bi-list-ul me-1"></i>全部
-        </a>
-    </li>
     <li class="nav-item">
         <a class="nav-link {% if current_status == 'upcoming' %}active{% endif %}"
            href="{{ url_for('events.list_events', q=request.args.get('q',''), status='upcoming') }}">
@@ -58,7 +52,7 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-truck ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
+                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-motorcycle ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
                         <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary" aria-label="查看詳情" title="查看詳情"><i class="bi bi-eye"></i></a>
                     </div>
                 </div>
@@ -94,7 +88,7 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <small class="text-muted">
                             <i class="bi bi-people me-1"></i>{{ stats.people }}/{{ event.max_attendees or '∞' }}
-                            <i class="bi bi-truck ms-1 me-1"></i>{{ stats.vehicles }}
+                            <i class="bi bi-motorcycle ms-1 me-1"></i>{{ stats.vehicles }}
                         </small>
                         <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-primary btn-sm"><i class="bi bi-eye me-1"></i>查看詳情</a>
                     </div>
@@ -129,8 +123,6 @@
             目前沒有進行中的活動
             {% elif current_status == 'past' %}
             目前沒有歷史活動
-            {% else %}
-            目前還沒有活動
             {% endif %}
         </p>
         {% if current_user.is_authenticated and current_user.role == 'admin' %}
