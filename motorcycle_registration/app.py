@@ -29,6 +29,16 @@ def create_app():
         except Exception as e:
             print(f'[startup] ⚠️ 建立管理員失敗: {e}')
 
+        # 自動建立測試資料（僅首次安裝用，偵測 events 為空時）
+        try:
+            from models import Event
+            if Event.query.count() == 0:
+                import seed_data
+                seed_data.seed()
+                print('[startup] ✅ 測試資料已建立（20 events + 5 users + registrations）')
+        except Exception as e:
+            print(f'[startup] ⚠️ 建立測試資料失敗: {e}')
+
     from routes.auth import auth_bp, init_login_manager
     from routes.oauth import oauth_bp
     from routes.events import events_bp
