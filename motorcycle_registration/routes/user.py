@@ -58,8 +58,13 @@ def settings():
     password_form = PasswordForm()
 
     if form.validate_on_submit():
-        current_user.name = form.name.data
-        current_user.license_plate = form.license_plate.data
+        user = User.query.get(current_user.id)
+        user.name = form.name.data.strip()
+        user.license_plate = form.license_plate.data.strip().upper()
+        user.phone = form.phone.data.strip()
+        user.emergency_contact_name = form.emergency_contact_name.data.strip()
+        user.emergency_contact_phone = form.emergency_contact_phone.data.strip()
+        user.mark_profile_complete_if_ready()
         db.session.commit()
         flash("個人資料已更新", "success")
         return redirect(url_for("user.settings"))
@@ -74,6 +79,10 @@ def settings():
 @user_bp.route("/settings/password", methods=["POST"])
 @login_required
 def change_password():
+    if current_user.role != "admin":
+        flash("一般使用者請使用 Google 帳號登入，無需變更本地密碼", "error")
+        return redirect(url_for("user.settings"))
+
     form = PasswordForm()
     if form.validate_on_submit():
         if not check_password_hash(current_user.password_hash, form.old_password.data):

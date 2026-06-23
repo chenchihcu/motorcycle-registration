@@ -43,7 +43,20 @@ class BulletinForm(FlaskForm):
 class SettingsForm(FlaskForm):
     name = StringField("姓名", validators=[DataRequired(message="請輸入姓名"), Length(max=100)])
     license_plate = StringField("車牌號碼", validators=[DataRequired(message="請輸入車牌號碼"), Length(max=20)])
+    phone = StringField("手機", validators=[DataRequired(message="請輸入手機"), Length(max=30)])
+    emergency_contact_name = StringField(
+        "緊急聯絡人姓名",
+        validators=[DataRequired(message="請輸入緊急聯絡人姓名"), Length(max=100)],
+    )
+    emergency_contact_phone = StringField(
+        "緊急聯絡人電話",
+        validators=[DataRequired(message="請輸入緊急聯絡人電話"), Length(max=30)],
+    )
     submit = SubmitField("儲存設定")
+
+
+class ProfileCompletionForm(SettingsForm):
+    submit = SubmitField("完成資料")
 
 
 class PasswordForm(FlaskForm):

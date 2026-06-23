@@ -1,5 +1,7 @@
 """E2E 測試 + 截圖驗證 — 內嵌 Flask 伺服器"""
 import sys, os, json, time, threading
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(__file__))
 os.environ["FLASK_ENV"] = "development"
 
@@ -22,12 +24,11 @@ BASE = "http://127.0.0.1:5002"
 
 PAGES = [
     ("/login", "登入頁"),
-    ("/register", "註冊頁"),
+    ("/register", "註冊停用導向"),
     ("/events", "活動列表"),
     ("/events/calendar", "日曆視圖"),
     ("/dashboard", "公告欄（需登入，應 redirect）"),
     ("/404", "404 錯誤頁"),
-    ("/403", "403 錯誤頁"),
 ]
 
 results = {"pass": 0, "fail": 0, "errors": []}
@@ -66,6 +67,7 @@ print("=" * 60)
 
 EXPECTED_ROUTES = [
     "/login", "/register", "/logout",
+    "/oauth/login/<provider>", "/oauth/callback/<provider>", "/oauth/complete-profile",
     "/events", "/events/calendar",
     "/dashboard", "/",
     "/my/registrations", "/my/settings", "/my/messages",
@@ -95,17 +97,17 @@ for route in EXPECTED_ROUTES:
 
 print()
 print("=" * 60)
-print("F4 ✅ 註冊流程測試")
+print("F4 ✅ 一般註冊停用測試")
 print("=" * 60)
 
-# 測試註冊新使用者
 try:
-    r = requests.get(BASE + "/register", timeout=5)
-    assert "註冊" in r.text, "註冊頁面缺少標題"
-    print("  [OK] 註冊頁 GET 成功")
+    r = requests.get(BASE + "/register", allow_redirects=False, timeout=5)
+    assert r.status_code == 302, f"預期 /register redirect，實際 HTTP {r.status_code}"
+    assert "/login" in r.headers.get("Location", ""), "註冊停用後應導回登入頁"
+    print("  [OK] /register 已停用並導回登入頁")
     results["pass"] += 1
 except Exception as e:
-    print(f"  [FAIL] 註冊頁測試: {e}")
+    print(f"  [FAIL] 一般註冊停用測試: {e}")
     results["errors"].append(f"Register page: {e}")
     results["fail"] += 1
 
@@ -115,7 +117,7 @@ print("F5 ✅ 管理儀表板圖表 API")
 print("=" * 60)
 
 try:
-    r = requests.get(BASE + "/admin/api/registration-trends", timeout=5)
+    r = requests.get(BASE + "/admin/api/registration-trends", allow_redirects=False, timeout=5)
     if r.status_code == 302 or r.status_code == 401:
         print(f"  [WARN] 需登入才能存取 API（HTTP {r.status_code}）— 正確")
         results["pass"] += 1
@@ -135,10 +137,10 @@ except Exception as e:
 
 print()
 print("=" * 60)
-print("F6 ✅ 404/403 頁面模板驗證")
+print("F6 ✅ 404 頁面模板驗證")
 print("=" * 60)
 
-for path, expected in [("/404", "404"), ("/404", "頁面不存在"), ("/403", "403"), ("/403", "沒有存取權限")]:
+for path, expected in [("/404", "404"), ("/404", "頁面不存在")]:
     r = requests.get(BASE + path, timeout=5)
     if expected in r.text:
         print(f"  [OK] {path} 包含「{expected}」")

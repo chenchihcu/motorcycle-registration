@@ -13,6 +13,10 @@ def register(event_id):
     event = Event.query.get_or_404(event_id)
     form = RegistrationForm(meta={'csrf': False})
 
+    if not current_user.has_complete_profile():
+        flash("請先補齊報名必要資料", "error")
+        return redirect(url_for("oauth.complete_profile"))
+
     if not form.validate_on_submit():
         flash("請輸入正確的出席人數", "error")
         return redirect(url_for("events.detail", event_id=event_id))
@@ -32,24 +36,16 @@ def register(event_id):
             flash("此活動名額已滿，無法報名", "error")
             return redirect(url_for("events.detail", event_id=event_id))
 
-    ip = request.remote_addr
-    existing_ip = Registration.query.filter_by(
-        event_id=event_id, ip_address=ip, cancelled_at=None
-    ).first()
-    if existing_ip:
-        flash("此 IP 已經報名此活動", "error")
-        return redirect(url_for("events.detail", event_id=event_id))
-
     registration = Registration(
         event_id=event_id,
         user_id=current_user.id,
         attendees_count=form.attendees_count.data,
-        ip_address=ip,
+        ip_address=request.remote_addr,
     )
     db.session.add(registration)
 
     post = BulletinPost(
-        content=f"{current_user.name} 已報名「{event.title}」活動（出席 {form.attendees_count.data} 人，車牌 {current_user.license_plate}）",
+        content=f"{current_user.name} 已報名「{event.title}」活動（出席 {form.attendees_count.data} 人）",
         post_type="system",
         event_id=event_id,
         created_by=current_user.id,
@@ -76,7 +72,7 @@ def cancel(event_id):
     registration.cancellation_reason = "使用者自行取消"
 
     post = BulletinPost(
-        content=f"{current_user.name} 已取消「{event.title}」活動報名（車牌 {current_user.license_plate}）",
+        content=f"{current_user.name} 已取消「{event.title}」活動報名",
         post_type="system",
         event_id=event_id,
         created_by=current_user.id,

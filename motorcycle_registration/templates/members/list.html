@@ -10,7 +10,11 @@
                 <thead>
                     <tr>
                         <th>姓名</th>
+                        {% if current_user.role == 'admin' %}
                         <th>車牌</th>
+                        <th>手機</th>
+                        <th>緊急聯絡人</th>
+                        {% endif %}
                         <th>加入日期</th>
                         <th>角色</th>
                     </tr>
@@ -24,7 +28,11 @@
                             <span class="badge bg-info text-dark ms-1">我</span>
                             {% endif %}
                         </td>
+                        {% if current_user.role == 'admin' %}
                         <td><code>{{ member.license_plate }}</code></td>
+                        <td>{{ member.phone or '—' }}</td>
+                        <td>{{ member.emergency_contact_name or '—' }}{% if member.emergency_contact_phone %} / {{ member.emergency_contact_phone }}{% endif %}</td>
+                        {% endif %}
                         <td class="text-muted">{{ member.created_at.strftime('%Y-%m-%d') }}</td>
                         <td>
                             {% if member.role == 'admin' %}

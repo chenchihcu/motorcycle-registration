@@ -1,42 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row justify-content-center mt-4">
-    <div class="col-md-8 col-lg-6">
+    <div class="col-md-8 col-lg-5">
         <div class="card shadow raised nature-card nature-card-waterfall">
             <div class="card-body p-4">
-                <h3 class="card-title text-center mb-4">註冊新帳號</h3>
-                <form method="POST">
-                    {{ form.hidden_tag() }}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form.username.label(class="form-label") }}
-                            {{ form.username(class="form-control", placeholder="請輸入帳號") }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form.name.label(class="form-label") }}
-                            {{ form.name(class="form-control", placeholder="請輸入姓名") }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form.password.label(class="form-label") }}
-                            {{ form.password(class="form-control", placeholder="請輸入密碼") }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form.confirm_password.label(class="form-label") }}
-                            {{ form.confirm_password(class="form-control", placeholder="再次輸入密碼") }}
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        {{ form.license_plate.label(class="form-label") }}
-                        {{ form.license_plate(class="form-control", placeholder="例如：ABC-1234") }}
-                    </div>
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary btn-lg") }}
-                    </div>
-                </form>
-                <div class="text-center mt-3">
-                    <a href="{{ url_for('auth.login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>已有帳號？立即登入</a>
+                <h3 class="card-title text-center mb-3">使用 Google 登入</h3>
+                <p class="text-muted text-center mb-4">一般使用者不再建立本地帳密。請回登入頁使用 Google 帳號登入，首次登入後再補齊報名資料。</p>
+                <div class="d-grid">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>前往登入
+                    </a>
                 </div>
             </div>
         </div>

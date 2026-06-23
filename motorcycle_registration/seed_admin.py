@@ -1,4 +1,4 @@
-\"\"\"建立初始管理員帳號\"\"\"
+"""建立初始管理員帳號"""
 import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))

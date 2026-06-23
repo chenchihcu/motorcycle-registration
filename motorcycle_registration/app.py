@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, request
+from flask_login import current_user
 from config import get_config
 from models import db
 
@@ -37,6 +38,49 @@ def create_app():
                 print("[migration] added event_date_end column")
         except Exception as e:
             print(f"[migration] skip: {e}")
+
+        # --- Migration: Google OAuth profile/contact fields ---
+        try:
+            from sqlalchemy import inspect, text
+            inspector = inspect(db.engine)
+            cols = {c["name"] for c in inspector.get_columns("users")}
+            user_columns = {
+                "email": "VARCHAR(255)",
+                "phone": "VARCHAR(30)",
+                "emergency_contact_name": "VARCHAR(100)",
+                "emergency_contact_phone": "VARCHAR(30)",
+                "profile_completed_at": "TIMESTAMP",
+                "last_login_at": "TIMESTAMP",
+            }
+            for column, column_type in user_columns.items():
+                if column not in cols:
+                    db.session.execute(text(
+                        f"ALTER TABLE users ADD COLUMN {column} {column_type}"
+                    ))
+                    print(f"[migration] added users.{column} column")
+            db.session.execute(text(
+                "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_oauth_identity "
+                "ON users (oauth_provider, oauth_id) "
+                "WHERE oauth_provider IS NOT NULL AND oauth_id IS NOT NULL"
+            ))
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"[migration] user profile fields skip: {e}")
+
+        # --- Migration: Google identity replaces per-IP registration uniqueness ---
+        try:
+            if db.engine.dialect.name == "postgresql":
+                from sqlalchemy import text
+                db.session.execute(text(
+                    "ALTER TABLE registrations DROP CONSTRAINT IF EXISTS uq_event_ip"
+                ))
+                db.session.commit()
+                print("[migration] dropped registrations.uq_event_ip constraint")
+        except Exception as e:
+            db.session.rollback()
+            print(f"[migration] drop uq_event_ip skip: {e}")
+
         # 自動建立預設管理員（如尚未存在）
         try:
             from werkzeug.security import generate_password_hash
@@ -87,6 +131,20 @@ def create_app():
     init_login_manager(app)
     from routes.oauth import init_oauth
     init_oauth(app)
+
+    @app.before_request
+    def require_complete_profile():
+        allowed_endpoints = {
+            "static",
+            "oauth.complete_profile",
+            "auth.logout",
+        }
+        if (
+            current_user.is_authenticated
+            and not current_user.has_complete_profile()
+            and request.endpoint not in allowed_endpoints
+        ):
+            return redirect(url_for("oauth.complete_profile"))
 
     @app.context_processor
     def inject_globals():

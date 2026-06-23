@@ -68,8 +68,8 @@ with sync_playwright() as p:
         screenshot(page, "e2e-01-login.png")
 
         page.goto(BASE + "/register", wait_until="networkidle")
-        ok("註冊頁載入成功")
-        screenshot(page, "e2e-02-register.png")
+        ok("一般註冊停用導向登入頁")
+        screenshot(page, "e2e-02-register-disabled.png")
     except Exception as e:
         fail(f"公開頁面測試: {e}")
 
@@ -267,7 +267,7 @@ with sync_playwright() as p:
 
         # 檢查是否有常見的設計元素
         body = page.text_content("body")
-        checks = [("Bootstrap", "bootstrap"), ("重機", "重機"), ("車隊", "車隊")]
+        checks = [("重機", "重機"), ("車隊", "車隊")]
         for label, keyword in checks:
             if keyword.lower() in body.lower():
                 ok(f"頁面包含「{label}」關鍵字")

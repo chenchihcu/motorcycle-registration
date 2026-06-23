@@ -104,10 +104,10 @@
                                 </div>
                                 <div class="col-6 col-sm-auto">
                                     <label class="form-label small mb-1 d-none d-sm-block">&nbsp;</label>
-                                    <button type="button" class="btn btn-primary w-100" onclick="confirmRegistration({{ event.id }}, '{{ event.title|e }}', '{{ event.event_date_start or event.event_date }}', '{{ current_user.name|e }}', '{{ current_user.license_plate }}')"><i class="bi bi-check-circle me-1"></i>立即報名</button>
+                                    <button type="button" class="btn btn-primary w-100" onclick="confirmRegistration({{ event.id }}, '{{ event.title|e }}', '{{ event.event_date_start or event.event_date }}', '{{ current_user.name|e }}')"><i class="bi bi-check-circle me-1"></i>立即報名</button>
                                 </div>
                             </div>
-                            <small class="text-muted d-block mt-2"><i class="bi bi-person me-1"></i>{{ current_user.name }} · <code>{{ current_user.license_plate }}</code></small>
+                            <small class="text-muted d-block mt-2"><i class="bi bi-person me-1"></i>{{ current_user.name }}</small>
                         </form>
                         {% endif %}
                     {% endif %}
@@ -177,8 +177,12 @@
                         <thead>
                             <tr>
                                 <th>姓名</th>
-                                <th>車牌</th>
                                 <th>人數</th>
+                                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                                <th>車牌</th>
+                                <th>手機</th>
+                                <th>緊急聯絡人</th>
+                                {% endif %}
                                 <th>報名時間</th>
                             </tr>
                         </thead>
@@ -186,8 +190,12 @@
                             {% for reg in attendee_list %}
                             <tr>
                                 <td>{{ reg.user.name }}</td>
-                                <td><code>{{ reg.user.license_plate }}</code></td>
                                 <td>{{ reg.attendees_count }}</td>
+                                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                                <td><code>{{ reg.user.license_plate }}</code></td>
+                                <td>{{ reg.user.phone or '—' }}</td>
+                                <td>{{ reg.user.emergency_contact_name or '—' }}{% if reg.user.emergency_contact_phone %} / {{ reg.user.emergency_contact_phone }}{% endif %}</td>
+                                {% endif %}
                                 <td class="text-muted small">{{ reg.registered_at.strftime('%m-%d %H:%M') }}</td>
                             </tr>
                             {% endfor %}
@@ -222,7 +230,7 @@
 
 {% block scripts %}
 <script>
-function confirmRegistration(eventId, eventTitle, eventDate, userName, licensePlate) {
+function confirmRegistration(eventId, eventTitle, eventDate, userName) {
     var count = document.getElementById('attendeesCount-' + eventId).value;
     var msg = '<div class="text-start">' +
         '<p class="fw-bold mb-2">請確認報名資訊：</p>' +
@@ -230,7 +238,6 @@ function confirmRegistration(eventId, eventTitle, eventDate, userName, licensePl
         '<tr><td class="ps-0 text-muted" style="width:80px">活動</td><td class="ps-0">' + eventTitle + '</td></tr>' +
         '<tr><td class="ps-0 text-muted">日期</td><td class="ps-0">' + eventDate + '</td></tr>' +
         '<tr><td class="ps-0 text-muted">姓名</td><td class="ps-0">' + userName + '</td></tr>' +
-        '<tr><td class="ps-0 text-muted">車牌</td><td class="ps-0">' + licensePlate + '</td></tr>' +
         '<tr><td class="ps-0 text-muted">人數</td><td class="ps-0">' + count + ' 人</td></tr>' +
         '</table></div>';
 

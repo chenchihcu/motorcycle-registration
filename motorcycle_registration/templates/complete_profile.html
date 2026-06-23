@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10 col-lg-7">
+        <div class="card shadow nature-card nature-card-forest">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-2">完成報名資料</h3>
+                <p class="text-muted text-center mb-4">請填妥以下資料，之後即可用同一個 Google 帳號管理報名、取消、回饋與活動紀錄。</p>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.name.label(class="form-label") }}
+                            {{ form.name(class="form-control", placeholder="請輸入姓名") }}
+                            {% for error in form.name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.license_plate.label(class="form-label") }}
+                            {{ form.license_plate(class="form-control", placeholder="例如：ABC-1234") }}
+                            {% for error in form.license_plate.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.phone.label(class="form-label") }}
+                        {{ form.phone(class="form-control", placeholder="請輸入手機") }}
+                        {% for error in form.phone.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.emergency_contact_name.label(class="form-label") }}
+                            {{ form.emergency_contact_name(class="form-control", placeholder="請輸入緊急聯絡人姓名") }}
+                            {% for error in form.emergency_contact_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.emergency_contact_phone.label(class="form-label") }}
+                            {{ form.emergency_contact_phone(class="form-control", placeholder="請輸入緊急聯絡人電話") }}
+                            {% for error in form.emergency_contact_phone.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
