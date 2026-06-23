@@ -34,28 +34,48 @@
                         </div>
                     </div>
                 </div>
-                {% if event.max_attendees %}
                 <div class="mb-3">
-                    {% set pct = (total_people / event.max_attendees * 100) | round %}
-                    {% set is_full = total_people >= event.max_attendees %}
+                    {% if event.max_attendees %}
+                    {% set pct_people = ((total_people / event.max_attendees) * 100) | round %}
+                    {% set is_full_people = total_people >= event.max_attendees %}
                     <div class="d-flex justify-content-between small mb-1">
-                        <span>報名進度</span>
-                        <span class="{% if is_full %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                        <span>人數進度</span>
+                        <span class="{% if is_full_people %}text-danger fw-bold{% else %}text-muted{% endif %}">
                             {{ total_people }} / {{ event.max_attendees }} 人
-                            {% if is_full %}(額滿){% endif %}
+                            {% if is_full_people %}(額滿){% endif %}
                         </span>
                     </div>
-                    <div class="progress" style="height: 10px;">
-                        <div class="progress-bar {% if is_full %}bg-danger{% elif pct >= 80 %}bg-warning{% else %}bg-success{% endif %}"
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar {% if is_full_people %}bg-danger{% elif pct_people >= 80 %}bg-warning{% else %}bg-success{% endif %}"
                              role="progressbar"
-                             style="width: {{ [pct, 100] | min }}%;"
+                             style="width: {{ [pct_people, 100] | min }}%;"
                              aria-valuenow="{{ total_people }}"
                              aria-valuemin="0"
                              aria-valuemax="{{ event.max_attendees }}">
                         </div>
                     </div>
+                    {% endif %}
+                    {% if event.max_vehicles %}
+                    {% set pct_veh = ((total_vehicles / event.max_vehicles) * 100) | round %}
+                    {% set is_full_veh = total_vehicles >= event.max_vehicles %}
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>車輛進度</span>
+                        <span class="{% if is_full_veh %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                            {{ total_vehicles }} / {{ event.max_vehicles }} 車
+                            {% if is_full_veh %}(額滿){% endif %}
+                        </span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar {% if is_full_veh %}bg-danger{% elif pct_veh >= 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             role="progressbar"
+                             style="width: {{ [pct_veh, 100] | min }}%;"
+                             aria-valuenow="{{ total_vehicles }}"
+                             aria-valuemin="0"
+                             aria-valuemax="{{ event.max_vehicles }}">
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
                 {% if current_user.is_authenticated %}
                     {% if user_registered and user_registered.cancelled_at is none %}
                         <div class="alert alert-success d-flex flex-wrap align-items-center justify-content-between">
@@ -67,7 +87,7 @@
                     {% elif user_registered and user_registered.cancelled_at is not none %}
                         <div class="alert alert-warning"><i class="bi bi-info-circle me-1"></i>您已取消此活動報名</div>
                     {% else %}
-                        {% set is_full = event.max_attendees and total_people >= event.max_attendees %}
+                        {% set is_full = (event.max_attendees and total_people >= event.max_attendees) or (event.max_vehicles and total_vehicles >= event.max_vehicles) %}
                         {% if is_full %}
                             <div class="alert alert-danger">
                                 <i class="bi bi-exclamation-triangle me-1"></i>此活動名額已滿，目前無法報名

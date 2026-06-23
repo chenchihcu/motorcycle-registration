@@ -23,6 +23,7 @@ class EventForm(FlaskForm):
     description = TextAreaField("活動內容概述", validators=[DataRequired(message="請輸入活動內容")])
     event_date = DateField("活動日期", validators=[DataRequired(message="請選擇活動日期")])
     max_attendees = IntegerField("人數上限（留空表示無限制）", validators=[])
+    max_vehicles = IntegerField("車輛數上限（留空表示無限制）", validators=[])
     google_maps_embed_url = TextAreaField("Google Maps 嵌入網址", validators=[])
     route_waypoints = TextAreaField("路線途經點（每行一個）", validators=[])
     submit = SubmitField("儲存")

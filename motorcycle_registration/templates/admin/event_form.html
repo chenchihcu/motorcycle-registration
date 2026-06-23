@@ -20,6 +20,10 @@
                         {{ form.max_attendees(class="form-control", type="number", min="1", placeholder="留空表示不限制人數") }}
                     </div>
                     <div class="mb-3">
+                        {{ form.max_vehicles.label(class="form-label") }}
+                        {{ form.max_vehicles(class="form-control", type="number", min="1", placeholder="留空表示不限制車輛數") }}
+                    </div>
+                    <div class="mb-3">
                         {{ form.description.label(class="form-label") }}
                         {{ form.description(class="form-control", rows="5", placeholder="請輸入活動內容概述") }}
                     </div>

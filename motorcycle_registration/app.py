@@ -30,6 +30,7 @@ def create_app():
             print(f'[startup] ⚠️ 建立管理員失敗: {e}')
 
     from routes.auth import auth_bp, init_login_manager
+    from routes.oauth import oauth_bp
     from routes.events import events_bp
     from routes.registration import registration_bp
     from routes.bulletin import bulletin_bp
@@ -38,6 +39,7 @@ def create_app():
     from routes.user import user_bp, members_bp
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(oauth_bp)
     app.register_blueprint(events_bp)
     app.register_blueprint(registration_bp)
     app.register_blueprint(bulletin_bp)
@@ -47,6 +49,8 @@ def create_app():
     app.register_blueprint(members_bp)
 
     init_login_manager(app)
+    from routes.oauth import init_oauth
+    init_oauth(app)
 
     @app.context_processor
     def inject_globals():
@@ -68,6 +72,18 @@ def create_app():
         except Exception:
             ctx["unread_count"] = 0
         return ctx
+
+    # 一鍵建立大量測試資料（僅首次安裝用，受 secret key 保護）
+    @app.route('/seed-data/<secret>')
+    def seed_data(secret):
+        if secret != app.config.get('SECRET_KEY', 'dev')[:16]:
+            return 'Invalid key', 403
+        try:
+            import seed_data
+            seed_data.seed()
+            return 'Seed data created', 200
+        except Exception as e:
+            return f'Seed error: {e}', 500
 
     # 一鍵建立預設管理員（僅在無管理員時可呼叫，首次安裝用）
     @app.route('/setup-admin')

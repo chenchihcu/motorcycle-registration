@@ -95,6 +95,8 @@ def events_new():
             event_date=form.event_date.data,
             google_maps_embed_url=form.google_maps_embed_url.data,
             route_waypoints=form.route_waypoints.data,
+            max_attendees=form.max_attendees.data,
+            max_vehicles=form.max_vehicles.data,
             created_by=current_user.id,
         )
         db.session.add(event)
