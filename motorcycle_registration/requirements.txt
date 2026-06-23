@@ -7,6 +7,7 @@ Jinja2==3.1.6
 psycopg2-binary==2.9.11
 python-dotenv==1.2.2
 Authlib==1.5.2
+requests==2.32.3
 serverless-wsgi==3.1.0
 SQLAlchemy==2.0.48
 Werkzeug==3.1.8
