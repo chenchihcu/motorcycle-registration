@@ -24,7 +24,9 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    event_date = db.Column(db.Date, nullable=False, index=True)
+    event_date = db.Column(db.Date, nullable=False, index=True)  # kept for SQLite compat; migrate to event_date_start
+    event_date_start = db.Column(db.Date, nullable=True, index=True)
+    event_date_end = db.Column(db.Date, nullable=True)
     google_maps_embed_url = db.Column(db.Text, nullable=True)
     route_waypoints = db.Column(db.Text, nullable=True)
     max_attendees = db.Column(db.Integer, nullable=True)
@@ -34,6 +36,25 @@ class Event(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=lambda: datetime.now(timezone.utc))
     creator = db.relationship("User", backref="created_events")
     registrations = db.relationship("Registration", backref="event", lazy="dynamic")
+
+    @property
+    def effective_start(self):
+        """Return event_date_start if set, else fall back to event_date."""
+        return self.event_date_start or self.event_date
+
+    @property
+    def effective_end(self):
+        """Return event_date_end if set, else fall back to effective_start."""
+        return self.event_date_end or self.effective_start
+
+    @property
+    def duration_days(self):
+        """Number of days this event spans (inclusive)."""
+        start = self.effective_start
+        end = self.effective_end
+        if start and end:
+            return (end - start).days + 1
+        return 1
 
 
 class Registration(db.Model):

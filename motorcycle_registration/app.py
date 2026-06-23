@@ -11,6 +11,32 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+        # --- Migration: copy old event_date → event_date_start/end ---
+        try:
+            from sqlalchemy import inspect, text
+            inspector = inspect(db.engine)
+            cols = {c["name"] for c in inspector.get_columns("events")}
+            if "event_date_start" not in cols:
+                db.session.execute(text(
+                    "ALTER TABLE events ADD COLUMN event_date_start DATE"
+                ))
+                db.session.execute(text(
+                    "UPDATE events SET event_date_start = event_date WHERE event_date_start IS NULL"
+                ))
+                db.session.commit()
+                print("[migration] added event_date_start column")
+            if "event_date_end" not in cols:
+                db.session.execute(text(
+                    "ALTER TABLE events ADD COLUMN event_date_end DATE"
+                ))
+                db.session.execute(text(
+                    "UPDATE events SET event_date_end = event_date_start WHERE event_date_end IS NULL"
+                ))
+                db.session.commit()
+                print("[migration] added event_date_end column")
+        except Exception as e:
+            print(f"[migration] skip: {e}")
         # 自動建立預設管理員（如尚未存在）
         try:
             from werkzeug.security import generate_password_hash

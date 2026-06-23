@@ -5,7 +5,10 @@
         <div class="card shadow mb-4 nature-card nature-card-forest">
             <div class="card-body">
                 <h3 class="card-title">{{ event.title }}</h3>
-                <p class="text-muted">{{ event.event_date }}</p>
+                <p class="text-muted">
+                    {{ event.effective_start }}
+                    {% if event.duration_days > 1 %} ~ {{ event.effective_end }}（{{ event.duration_days }} 天）{% endif %}
+                </p>
                 <hr>
                 <div class="mb-4">
                     <h5>活動內容</h5>
@@ -93,15 +96,15 @@
                                 <i class="bi bi-exclamation-triangle me-1"></i>此活動名額已滿，目前無法報名
                             </div>
                         {% else %}
-                        <form method="POST" action="{{ url_for('registration.register', event_id=event.id) }}" class="mb-3">
+                        <form method="POST" action="{{ url_for('registration.register', event_id=event.id) }}" class="mb-3" id="registerForm-{{ event.id }}">
                             <div class="row g-2 align-items-end">
                                 <div class="col-6 col-sm-auto">
                                     <label class="form-label small mb-1">出席人數</label>
-                                    <input type="number" name="attendees_count" value="1" min="1" max="10" class="form-control" style="width:100%">
+                                    <input type="number" name="attendees_count" id="attendeesCount-{{ event.id }}" value="1" min="1" max="10" class="form-control" style="width:100%">
                                 </div>
                                 <div class="col-6 col-sm-auto">
                                     <label class="form-label small mb-1 d-none d-sm-block">&nbsp;</label>
-                                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-circle me-1"></i>立即報名</button>
+                                    <button type="button" class="btn btn-primary w-100" onclick="confirmRegistration({{ event.id }}, '{{ event.title|e }}', '{{ event.event_date_start or event.event_date }}', '{{ current_user.name|e }}', '{{ current_user.license_plate }}')"><i class="bi bi-check-circle me-1"></i>立即報名</button>
                                 </div>
                             </div>
                             <small class="text-muted d-block mt-2"><i class="bi bi-person me-1"></i>{{ current_user.name }} · <code>{{ current_user.license_plate }}</code></small>
@@ -200,7 +203,7 @@
             <div class="card-body">
                 <h5>活動資訊</h5>
                 <ul class="list-unstyled">
-                    <li><strong>日期：</strong>{{ event.event_date }}</li>
+                    <li><strong>日期：</strong>{{ event.effective_start }}{% if event.duration_days > 1 %} ~ {{ event.effective_end }}{% endif %}</li>
                     <li><strong>建立者：</strong>{{ event.creator.name }}</li>
                     <li><strong>建立時間：</strong>{{ event.created_at.strftime('%Y-%m-%d %H:%M') }}</li>
                 </ul>
@@ -210,10 +213,36 @@
                     <a href="{{ url_for('admin.export_route', event_id=event.id) }}" class="btn btn-outline-secondary">匯出路線表 (CSV)</a>
                 </div>
                 {% endif %}
+                <a href="{{ url_for('events.export_ics', event_id=event.id) }}" class="btn btn-outline-success w-100 mt-2"><i class="bi bi-calendar-plus me-1"></i>加入行事曆</a>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
+{% block scripts %}
+<script>
+function confirmRegistration(eventId, eventTitle, eventDate, userName, licensePlate) {
+    var count = document.getElementById('attendeesCount-' + eventId).value;
+    var msg = '<div class="text-start">' +
+        '<p class="fw-bold mb-2">請確認報名資訊：</p>' +
+        '<table class="table table-sm table-borderless mb-0">' +
+        '<tr><td class="ps-0 text-muted" style="width:80px">活動</td><td class="ps-0">' + eventTitle + '</td></tr>' +
+        '<tr><td class="ps-0 text-muted">日期</td><td class="ps-0">' + eventDate + '</td></tr>' +
+        '<tr><td class="ps-0 text-muted">姓名</td><td class="ps-0">' + userName + '</td></tr>' +
+        '<tr><td class="ps-0 text-muted">車牌</td><td class="ps-0">' + licensePlate + '</td></tr>' +
+        '<tr><td class="ps-0 text-muted">人數</td><td class="ps-0">' + count + ' 人</td></tr>' +
+        '</table></div>';
 
+    window.showConfirmModal(msg, {
+        htmlMessage: true,
+        confirmText: '確認報名',
+        confirmClass: 'btn-primary'
+    }).then(function (confirmed) {
+        if (confirmed) {
+            document.getElementById('registerForm-' + eventId).submit();
+        }
+    });
+}
+</script>
+{% endblock %}

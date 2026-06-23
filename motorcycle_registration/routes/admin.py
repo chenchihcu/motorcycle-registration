@@ -26,7 +26,7 @@ def admin_required(f):
 def dashboard():
     total_events = Event.query.count()
     upcoming_events = Event.query.filter(
-        Event.event_date >= datetime.now(timezone.utc).date()
+        Event.event_date_start >= datetime.now(timezone.utc).date()
     ).count()
     total_users = User.query.count()
     total_messages = Message.query.count()
@@ -35,6 +35,12 @@ def dashboard():
 
     recent_events = Event.query.order_by(Event.created_at.desc()).limit(5).all()
     recent_posts = BulletinPost.query.order_by(BulletinPost.created_at.desc()).limit(5).all()
+
+    # 最近結束的 3 個活動
+    today = datetime.now(timezone.utc).date()
+    past_events = Event.query.filter(
+        Event.event_date_start < today
+    ).order_by(Event.event_date_start.desc()).limit(3).all()
 
     return render_template(
         "admin/dashboard.html",
@@ -46,6 +52,7 @@ def dashboard():
         active_regs=active_regs,
         recent_events=recent_events,
         recent_posts=recent_posts,
+        past_events=past_events,
     )
 
 
@@ -79,8 +86,8 @@ def registration_trends():
 @login_required
 @admin_required
 def events_list():
-    events = Event.query.order_by(Event.event_date.desc()).all()
-    return render_template("admin/events_list.html", events=events)
+    events = Event.query.order_by(Event.event_date_start.desc()).all()
+    return render_template("admin/events_list.html", events=events, today=datetime.now(timezone.utc).date())
 
 
 @admin_bp.route("/events/new", methods=["GET", "POST"])
@@ -89,10 +96,14 @@ def events_list():
 def events_new():
     form = EventForm()
     if form.validate_on_submit():
+        start = form.event_date_start.data
+        end = form.event_date_end.data or start
         event = Event(
             title=form.title.data,
             description=form.description.data,
-            event_date=form.event_date.data,
+            event_date=start,  # keep old column in sync
+            event_date_start=start,
+            event_date_end=end,
             google_maps_embed_url=form.google_maps_embed_url.data,
             route_waypoints=form.route_waypoints.data,
             max_attendees=form.max_attendees.data,
@@ -103,7 +114,7 @@ def events_new():
         db.session.commit()
 
         post = BulletinPost(
-            content=f"📢 新活動：{event.title}（{event.event_date}）",
+            content=f"📢 新活動：{event.title}（{event.effective_start}）",
             post_type="system",
             event_id=event.id,
             created_by=current_user.id,
@@ -123,7 +134,17 @@ def events_edit(event_id):
     event = Event.query.get_or_404(event_id)
     form = EventForm(obj=event)
     if form.validate_on_submit():
-        form.populate_obj(event)
+        start = form.event_date_start.data
+        end = form.event_date_end.data or start
+        event.title = form.title.data
+        event.description = form.description.data
+        event.event_date = start  # keep old column in sync
+        event.event_date_start = start
+        event.event_date_end = end
+        event.google_maps_embed_url = form.google_maps_embed_url.data
+        event.route_waypoints = form.route_waypoints.data
+        event.max_attendees = form.max_attendees.data
+        event.max_vehicles = form.max_vehicles.data
         event.updated_at = datetime.now(timezone.utc)
         db.session.commit()
         flash("活動已更新", "success")

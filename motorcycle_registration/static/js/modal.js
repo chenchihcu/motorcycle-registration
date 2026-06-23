@@ -59,8 +59,12 @@
         var okBtn = document.getElementById('confirmOkBtn');
         var cancelBtn = document.getElementById('confirmCancelBtn');
 
-        // 設定訊息
-        messageEl.textContent = message;
+        // 設定訊息（支援 HTML 模式）
+        if (options.htmlMessage) {
+            messageEl.innerHTML = message;
+        } else {
+            messageEl.textContent = message;
+        }
 
         // 設定按鈕文字
         okBtn.textContent = options.confirmText || '確定';

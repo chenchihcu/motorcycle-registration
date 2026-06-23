@@ -3,7 +3,7 @@
 <h3 class="mb-4">活動列表</h3>
 
 <!-- 搜尋列 -->
-<form method="GET" action="{{ url_for('events.list_events') }}" class="row g-2 mb-4">
+<form method="GET" action="{{ url_for('events.list_events') }}" class="row g-2 mb-3">
     <div class="col-md-6 col-lg-4">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="搜尋活動名稱或描述..." value="{{ request.args.get('q', '') }}">
@@ -15,12 +15,57 @@
     </div>
 </form>
 
+<!-- Tab 切換 -->
+{% set current_status = request.args.get('status', 'all') %}
+<ul class="nav nav-pills mb-4" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link {% if current_status == 'all' %}active{% endif %}"
+           href="{{ url_for('events.list_events', q=request.args.get('q',''), status='all') }}">
+            <i class="bi bi-list-ul me-1"></i>全部
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if current_status == 'upcoming' %}active{% endif %}"
+           href="{{ url_for('events.list_events', q=request.args.get('q',''), status='upcoming') }}">
+            <i class="bi bi-calendar-event me-1"></i>進行中
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if current_status == 'past' %}active{% endif %}"
+           href="{{ url_for('events.list_events', q=request.args.get('q',''), status='past') }}">
+            <i class="bi bi-clock-history me-1"></i>歷史活動
+        </a>
+    </li>
+</ul>
+
 {% set today = today or '' %}
 {% if events.items %}
     <div class="row">
         {% for event in events.items %}
-        {% set is_past = event.event_date < today %}
-        {% set is_today = event.event_date == today %}
+        {% set is_past = event.effective_start < today %}
+        {% set is_today = event.effective_start == today %}
+        {% set stats = event_stats.get(event.id, {'people': 0, 'vehicles': 0}) %}
+        {% if is_past %}
+        <!-- 歷史活動：精簡列表 -->
+        <div class="col-12 mb-2">
+            <div class="card shadow-sm">
+                <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-secondary">已結束</span>
+                        <div>
+                            <a href="{{ url_for('events.detail', event_id=event.id) }}" class="text-decoration-none fw-bold">{{ event.title }}</a>
+                            <small class="text-muted ms-2">{{ event.effective_start }}</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-truck ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
+                        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- 進行中：完整卡片 -->
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card shadow card-hover h-100 nature-card nature-card-forest">
                 <div class="card-body">
@@ -28,70 +73,69 @@
                         <h5 class="card-title mb-0">{{ event.title }}</h5>
                         {% if is_today %}
                         <span class="badge bg-danger">今天</span>
-                        {% elif is_past %}
-                        <span class="badge bg-secondary">已結束</span>
-                        {% elif event.max_attendees %}
-                            {% set pct = (event_stats[event.id]['people'] / event.max_attendees * 100) | round %}
-                            {% if event_stats[event.id]['people'] >= event.max_attendees %}
-                            <span class="badge bg-danger">額滿</span>
-                            {% elif pct >= 80 %}
-                            <span class="badge bg-warning text-dark">即將額滿</span>
-                            {% else %}
-                            <span class="badge bg-success">即將到來</span>
-                            {% endif %}
+                        {% elif event.max_attendees and stats.people >= event.max_attendees %}
+                        <span class="badge bg-danger">額滿</span>
                         {% else %}
                         <span class="badge bg-success">即將到來</span>
                         {% endif %}
                     </div>
                     <div class="d-flex align-items-center text-muted mb-2">
                         <i class="bi bi-calendar3 me-1"></i>
-                        <small>{{ event.event_date }}</small>
+                        <small>{{ event.effective_start }}{% if event.duration_days > 1 %} ~ {{ event.effective_end }}（{{ event.duration_days }} 天）{% endif %}</small>
                     </div>
-                    <p class="card-text">{{ event.description[:100] ~ '...' if event.description and event.description|length > 100 else event.description }}</p>
+                    <p class="card-text small">{{ event.description[:100] ~ '...' if event.description and event.description|length > 100 else event.description }}</p>
+                    {% if event.max_attendees %}
+                    {% set pct = (stats.people / event.max_attendees * 100) | round %}
+                    <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar {% if pct >= 100 %}bg-danger{% elif pct >= 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             style="width: {{ [pct, 100] | min }}%;"></div>
+                    </div>
+                    {% endif %}
                     <div class="d-flex justify-content-between align-items-center mt-auto">
-                        {% if event.max_attendees %}
                         <small class="text-muted">
-                            <i class="bi bi-people me-1"></i>{{ event_stats[event.id]['people'] }}/{{ event.max_attendees }}
-                            <i class="bi bi-truck ms-1 me-1"></i>{{ event_stats[event.id]['vehicles'] }}
+                            <i class="bi bi-people me-1"></i>{{ stats.people }}/{{ event.max_attendees or '∞' }}
+                            <i class="bi bi-truck ms-1 me-1"></i>{{ stats.vehicles }}
                         </small>
-                        {% else %}
-                        <small class="text-muted">
-                            <i class="bi bi-people me-1"></i>{{ event_stats[event.id]['people'] }} 人
-                            <i class="bi bi-truck ms-1 me-1"></i>{{ event_stats[event.id]['vehicles'] }} 車
-                        </small>
-                        {% endif %}
                         <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-primary btn-sm"><i class="bi bi-eye me-1"></i>查看詳情</a>
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
     </div>
     <!-- 分頁 -->
     <nav>
         <ul class="pagination justify-content-center">
             {% if events.has_prev %}
-            <li class="page-item"><a class="page-link" href="{{ url_for('events.list_events', page=events.prev_num) }}">上一頁</a></li>
+            <li class="page-item"><a class="page-link" href="{{ url_for('events.list_events', page=events.prev_num, q=request.args.get('q',''), status=current_status) }}">上一頁</a></li>
             {% endif %}
             {% for page_num in events.iter_pages() %}
                 {% if page_num %}
                 <li class="page-item {% if page_num == events.page %}active{% endif %}">
-                    <a class="page-link" href="{{ url_for('events.list_events', page=page_num) }}">{{ page_num }}</a>
+                    <a class="page-link" href="{{ url_for('events.list_events', page=page_num, q=request.args.get('q',''), status=current_status) }}">{{ page_num }}</a>
                 </li>
                 {% endif %}
             {% endfor %}
             {% if events.has_next %}
-            <li class="page-item"><a class="page-link" href="{{ url_for('events.list_events', page=events.next_num) }}">下一頁</a></li>
+            <li class="page-item"><a class="page-link" href="{{ url_for('events.list_events', page=events.next_num, q=request.args.get('q',''), status=current_status) }}">下一頁</a></li>
             {% endif %}
         </ul>
     </nav>
 {% else %}
     <div class="text-center py-5 nature-empty nature-empty-mountain">
-        <p class="text-muted">目前還沒有活動</p>
+        <p class="text-muted">
+            {% if current_status == 'upcoming' %}
+            目前沒有進行中的活動
+            {% elif current_status == 'past' %}
+            目前沒有歷史活動
+            {% else %}
+            目前還沒有活動
+            {% endif %}
+        </p>
         {% if current_user.is_authenticated and current_user.role == 'admin' %}
         <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary btn-nature-hover">建立第一個活動</a>
         {% endif %}
     </div>
 {% endif %}
 {% endblock %}
-

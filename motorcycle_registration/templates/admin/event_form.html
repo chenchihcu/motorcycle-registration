@@ -12,8 +12,16 @@
                         {{ form.title(class="form-control", placeholder="請輸入活動名稱") }}
                     </div>
                     <div class="mb-3">
-                        {{ form.event_date.label(class="form-label") }}
-                        {{ form.event_date(class="form-control", type="date") }}
+                        {{ form.event_date_start.label(class="form-label") }}
+                        {{ form.event_date_start(class="form-control", type="date") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.event_date_end.label(class="form-label") }}
+                        {{ form.event_date_end(class="form-control", type="date") }}
+                        <small class="text-muted">若為單日活動可留空，系統自動使用開始日期</small>
+                        <div id="duration-display" class="mt-1" style="display:none;">
+                            <span class="badge bg-info"><i class="bi bi-clock-history me-1"></i>活動天數：<span id="duration-days">1</span> 天</span>
+                        </div>
                     </div>
                     <div class="mb-3">
                         {{ form.max_attendees.label(class="form-label") }}
@@ -70,6 +78,25 @@
 <script>
 (function() {
     'use strict';
+
+    // Duration calculator
+    var startInput = document.getElementById('event_date_start');
+    var endInput = document.getElementById('event_date_end');
+    var display = document.getElementById('duration-display');
+    var daysSpan = document.getElementById('duration-days');
+
+    function updateDuration() {
+        if (!startInput.value) { display.style.display = 'none'; return; }
+        var start = new Date(startInput.value);
+        var end = endInput.value ? new Date(endInput.value) : start;
+        if (end < start) end = start;
+        var diff = Math.round((end - start) / 86400000) + 1;
+        daysSpan.textContent = diff;
+        display.style.display = '';
+    }
+    if (startInput) startInput.addEventListener('change', updateDuration);
+    if (endInput) endInput.addEventListener('change', updateDuration);
+    updateDuration();
 
     var list = document.getElementById('waypoint-list');
     var hidden = document.getElementById('route_waypoints_hidden');

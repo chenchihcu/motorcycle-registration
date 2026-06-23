@@ -25,8 +25,8 @@ def registrations():
     active = (
         Registration.query.filter_by(user_id=current_user.id, cancelled_at=None)
         .join(Event)
-        .filter(Event.event_date >= now)
-        .order_by(Event.event_date.asc())
+        .filter(Event.event_date_start >= now)
+        .order_by(Event.event_date_start.asc())
         .all()
     )
 
@@ -36,7 +36,7 @@ def registrations():
             Registration.user_id == current_user.id,
             db.or_(
                 Registration.cancelled_at != None,
-                Event.event_date < now,
+                Event.event_date_start < now,
             ),
         )
         .join(Event)

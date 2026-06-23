@@ -11,6 +11,7 @@
             <tr>
                 <th>活動名稱</th>
                 <th>日期</th>
+                <th>狀態</th>
                 <th>建立者</th>
                 <th>報名人數</th>
                 <th>容量</th>
@@ -19,9 +20,21 @@
         </thead>
         <tbody>
             {% for event in events %}
+            {% set now = today if today else '' %}
+            {% set is_past = event.effective_start < now %}
+            {% set is_full = event.max_attendees and event.registrations.filter_by(cancelled_at=None).count() >= event.max_attendees %}
             <tr>
                 <td>{{ event.title }}</td>
-                <td>{{ event.event_date }}</td>
+                <td>{{ event.effective_start }}{% if event.duration_days > 1 %} ~ {{ event.effective_end }}{% endif %}</td>
+                <td>
+                    {% if is_full %}
+                    <span class="badge bg-danger">額滿</span>
+                    {% elif is_past %}
+                    <span class="badge bg-secondary">已結束</span>
+                    {% else %}
+                    <span class="badge bg-success">進行中</span>
+                    {% endif %}
+                </td>
                 <td>{{ event.creator.name }}</td>
                 <td>{{ event.registrations.filter_by(cancelled_at=None).count() }}</td>
                 <td>

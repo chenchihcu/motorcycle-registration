@@ -1,4 +1,4 @@
-"""第三方登入 OAuth 路由 — Google / Apple / Line"""
+"""第三方登入 OAuth 路由 — Google / Line (Apple 已移除)"""
 import os
 import secrets
 from flask import Blueprint, redirect, url_for, flash, request, current_app
@@ -10,82 +10,111 @@ oauth_bp = Blueprint("oauth", __name__, url_prefix="/oauth")
 
 _oauth = None
 
+# 有設定憑證的 providers 清單，由 init_oauth() 填入
+active_providers: list[str] = []
+
+# 各 provider 的環境變數對照
+_PROVIDER_CONFIGS: dict[str, dict] = {
+    "google": {
+        "env_client_id": "GOOGLE_CLIENT_ID",
+        "env_client_secret": "GOOGLE_CLIENT_SECRET",
+        "register_kwargs": {
+            "server_metadata_url": "https://accounts.google.com/.well-known/openid-configuration",
+            "client_kwargs": {"scope": "openid email profile"},
+        },
+    },
+    "line": {
+        "env_client_id": "LINE_CHANNEL_ID",
+        "env_client_secret": "LINE_CHANNEL_SECRET",
+        "register_kwargs": {
+            "authorize_url": "https://access.line.me/oauth2/v2.1/authorize",
+            "access_token_url": "https://api.line.me/oauth2/v2.1/token",
+            "client_kwargs": {
+                "scope": "openid profile email",
+                "token_endpoint_auth_method": "client_secret_post",
+            },
+            "userinfo_endpoint": "https://api.line.me/v2/profile",
+        },
+    },
+}
+
+_ALLOWED_PROVIDERS = frozenset(["google", "line"])
+
 
 def init_oauth(app):
-    global _oauth
+    global _oauth, active_providers
     _oauth = OAuth(app)
+    active_providers = []
 
-    # Google OAuth
-    _oauth.register(
-        name="google",
-        server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-        client_id=os.getenv("GOOGLE_CLIENT_ID", ""),
-        client_secret=os.getenv("GOOGLE_CLIENT_SECRET", ""),
-        client_kwargs={"scope": "openid email profile"},
-    )
+    for provider, cfg in _PROVIDER_CONFIGS.items():
+        client_id = os.getenv(cfg["env_client_id"], "")
+        client_secret = os.getenv(cfg["env_client_secret"], "")
 
-    # Apple OAuth
-    _oauth.register(
-        name="apple",
-        server_metadata_url="https://appleid.apple.com/.well-known/openid-configuration",
-        client_id=os.getenv("APPLE_CLIENT_ID", ""),
-        client_secret=os.getenv("APPLE_CLIENT_SECRET", ""),
-        client_kwargs={"scope": "name email"},
-    )
+        if not client_id or not client_secret:
+            app.logger.warning(
+                "OAuth %s: 未設定 %s / %s，已跳過註冊",
+                provider, cfg["env_client_id"], cfg["env_client_secret"],
+            )
+            continue
 
-    # Line OAuth
-    _oauth.register(
-        name="line",
-        authorize_url="https://access.line.me/oauth2/v2.1/authorize",
-        access_token_url="https://api.line.me/oauth2/v2.1/token",
-        client_id=os.getenv("LINE_CHANNEL_ID", ""),
-        client_secret=os.getenv("LINE_CHANNEL_SECRET", ""),
-        client_kwargs={
-            "scope": "openid profile email",
-            "token_endpoint_auth_method": "client_secret_post",
-        },
-        userinfo_endpoint="https://api.line.me/v2/profile",
-    )
+        _oauth.register(
+            name=provider,
+            client_id=client_id,
+            client_secret=client_secret,
+            **cfg["register_kwargs"],
+        )
+        active_providers.append(provider)
+
+    app.logger.info("OAuth active providers: %s", active_providers)
 
 
 @oauth_bp.route("/login/<provider>")
 def login(provider):
     if current_user.is_authenticated:
         return redirect(url_for("bulletin.dashboard"))
-    if _oauth is None or provider not in ["google", "apple", "line"]:
+
+    if provider not in _ALLOWED_PROVIDERS:
         flash("不支援的登入方式", "error")
         return redirect(url_for("auth.login"))
+
+    if provider not in active_providers:
+        flash(f"{provider} 登入尚未設定（缺少憑證）", "error")
+        return redirect(url_for("auth.login"))
+
+    if _oauth is None:
+        flash("OAuth 尚未初始化", "error")
+        return redirect(url_for("auth.login"))
+
     redirect_uri = url_for("oauth.callback", provider=provider, _external=True)
     return _oauth.create_client(provider).authorize_redirect(redirect_uri)
 
 
 @oauth_bp.route("/callback/<provider>")
 def callback(provider):
-    if _oauth is None or provider not in ["google", "apple", "line"]:
+    if provider not in _ALLOWED_PROVIDERS:
         flash("登入失敗：不支援的登入方式", "error")
+        return redirect(url_for("auth.login"))
+
+    if provider not in active_providers:
+        flash(f"{provider} 登入尚未設定（缺少憑證）", "error")
         return redirect(url_for("auth.login"))
 
     try:
         token = _oauth.create_client(provider).authorize_access_token()
     except Exception as e:
         current_app.logger.error(f"OAuth {provider} token error: {e}")
-        flash(f"{provider} 登入驗證失敗", "error")
+        flash(f"{provider} 登入驗證失敗，請稍後再試", "error")
         return redirect(url_for("auth.login"))
 
     # 取得使用者資訊
     try:
+        userinfo = token.get("userinfo") or {}
+
         if provider == "line":
-            userinfo = token.get("userinfo") or {}
             oauth_id = userinfo.get("sub", token.get("id_token", ""))
             name = userinfo.get("name", f"Line_{oauth_id[:8]}")
             email = userinfo.get("email", "")
-        elif provider == "apple":
-            userinfo = token.get("userinfo") or {}
-            oauth_id = userinfo.get("sub", token.get("id_token", "")[:20])
-            name = userinfo.get("name", {}).get("firstName", "") or f"Apple_{oauth_id[:8]}"
-            email = userinfo.get("email", "")
-        else:
-            userinfo = token.get("userinfo") or {}
+        else:  # google
             oauth_id = userinfo.get("sub", "")
             name = userinfo.get("name", f"Google_{oauth_id[:8]}")
             email = userinfo.get("email", "")
@@ -95,17 +124,15 @@ def callback(provider):
         return redirect(url_for("auth.login"))
 
     if not oauth_id:
-        flash("登入失敗：無法取得身份識別", "error")
+        flash(f"{provider} 登入失敗：無法取得身份識別", "error")
         return redirect(url_for("auth.login"))
 
     # 查詢或建立使用者
     user = User.query.filter_by(oauth_provider=provider, oauth_id=oauth_id).first()
     if not user:
-        # 嘗試用 email 找既有帳號
         if email:
             user = User.query.filter_by(username=email.split("@")[0]).first()
         if not user:
-            # 自動註冊
             safe_username = f"{provider}_{oauth_id[:12]}"
             user = User(
                 username=safe_username,

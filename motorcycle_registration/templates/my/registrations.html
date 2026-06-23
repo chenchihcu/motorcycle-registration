@@ -35,7 +35,7 @@
                         <td>
                             <a href="{{ url_for('events.detail', event_id=reg.event.id) }}">{{ reg.event.title }}</a>
                         </td>
-                        <td>{{ reg.event.event_date }}</td>
+                        <td>{{ reg.event.effective_start }}</td>
                         <td>{{ reg.attendees_count }} 人</td>
                         <td><span class="badge bg-success">已報名</span></td>
                         <td>
@@ -79,7 +79,7 @@
                         <td>
                             <a href="{{ url_for('events.detail', event_id=reg.event.id) }}">{{ reg.event.title }}</a>
                         </td>
-                        <td>{{ reg.event.event_date }}</td>
+                        <td>{{ reg.event.effective_start }}</td>
                         <td>
                             {% if reg.cancelled_at %}
                             <span class="badge bg-danger">已取消</span>

@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from models import db, User
 from forms import LoginForm, RegisterForm
+from routes.oauth import active_providers
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -44,7 +45,7 @@ def login():
             next_page = request.args.get("next")
             return redirect(next_page or url_for("bulletin.dashboard"))
         flash("帳號或密碼錯誤", "error")
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, oauth_providers=active_providers)
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])

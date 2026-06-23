@@ -60,7 +60,7 @@
                     {% for event in recent_events %}
                     <div class="border-bottom py-2">
                         <a href="{{ url_for('admin.events_edit', event_id=event.id) }}">{{ event.title }}</a>
-                        <small class="text-muted float-end">{{ event.event_date }}</small>
+                        <small class="text-muted float-end">{{ event.effective_start }}</small>
                     </div>
                     {% endfor %}
                 {% else %}
@@ -107,6 +107,31 @@
         </div>
     </div>
 </div>
+{% if past_events %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-light">
+                <h5 class="mb-0"><i class="bi bi-clock-history me-1"></i>最近結束的活動</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for event in past_events %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6><a href="{{ url_for('admin.events_edit', event_id=event.id) }}">{{ event.title }}</a></h6>
+                                <small class="text-muted">{{ event.effective_start }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}

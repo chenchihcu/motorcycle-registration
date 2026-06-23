@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from datetime import date, timedelta
 from werkzeug.security import generate_password_hash
 from app import create_app
-from models import db, User, Event, Registration
+from models import db, User, Event, Registration, BulletinPost
 
 
 EVENT_TEMPLATES = [
@@ -89,6 +89,8 @@ def seed(app=None):
                 title=tmpl["title"],
                 description=tmpl["desc"],
                 event_date=d,
+                event_date_start=d,
+                event_date_end=d + timedelta(days=random.randint(0, 2)),
                 max_attendees=60,
                 max_vehicles=40,
                 created_by=admin.id,
@@ -124,6 +126,29 @@ def seed(app=None):
                 reg_count += 1
         db.session.commit()
         print(f"[OK] 建立 {reg_count} 筆報名資料")
+
+        # 建立管理員公告 (post_type='manual') + 系統通知 (post_type='system')
+        manual_posts = [
+            "歡迎新車友加入！每月第一週日定期車聚請踴躍參加",
+            "安全宣導：山區騎行請務必配戴完整護具",
+            "車隊 Logo 徵稿活動開跑",
+        ]
+        system_posts = [
+            "系統已完成版本更新",
+            f"新活動已建立：{events[-1].title}" if events else "新活動已建立",
+            "報名系統維護公告",
+            "車隊年度統計資料已更新",
+        ]
+        for content in manual_posts:
+            db.session.add(BulletinPost(
+                content=content, post_type="manual", created_by=admin.id,
+            ))
+        for content in system_posts:
+            db.session.add(BulletinPost(
+                content=content, post_type="system", created_by=admin.id,
+            ))
+        db.session.commit()
+        print(f"[OK] 建立 {len(manual_posts)} 筆管理員公告 + {len(system_posts)} 筆系統通知")
 
         print("\n=== 資料建立完成！ ===")
         print(f"   測試帳號密碼: test01 ~ test05 / test1234")
@@ -164,6 +189,8 @@ def seed_with_current_app():
             title=tmpl["title"],
             description=tmpl["desc"],
             event_date=d,
+            event_date_start=d,
+            event_date_end=d + timedelta(days=random.randint(0, 2)),
             max_attendees=60,
             max_vehicles=40,
             created_by=admin.id,
@@ -191,6 +218,28 @@ def seed_with_current_app():
             )
             db.session.add(reg)
             reg_count += 1
+    db.session.commit()
+
+    # 建立管理員公告 + 系統通知
+    manual_posts = [
+        "歡迎新車友加入！每月第一週日定期車聚請踴躍參加",
+        "安全宣導：山區騎行請務必配戴完整護具",
+        "車隊 Logo 徵稿活動開跑",
+    ]
+    system_posts = [
+        "系統已完成版本更新",
+        f"新活動已建立：{events[-1].title}" if events else "新活動已建立",
+        "報名系統維護公告",
+        "車隊年度統計資料已更新",
+    ]
+    for content in manual_posts:
+        db.session.add(BulletinPost(
+            content=content, post_type="manual", created_by=admin.id,
+        ))
+    for content in system_posts:
+        db.session.add(BulletinPost(
+            content=content, post_type="system", created_by=admin.id,
+        ))
     db.session.commit()
 
 

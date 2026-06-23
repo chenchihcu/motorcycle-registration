@@ -22,15 +22,27 @@
                     <div class="col-6">
                     <div class="stat-card nature-accent nature-accent-maple">
                         <i class="bi bi-people fs-2"></i>
-                        <div class="stat-number">{{ total_people }}</div>
-                        <div class="stat-label">目前報名人數</div>
+                        <div class="stat-number">{{ featured_people }}</div>
+                        <div class="stat-label">
+                            {% if featured_event %}
+                            <a href="{{ url_for('events.detail', event_id=featured_event.id) }}" class="text-decoration-none">{{ featured_event.title }}</a> 報名人數
+                            {% else %}
+                            暫無活動
+                            {% endif %}
+                        </div>
                     </div>
                     </div>
                     <div class="col-6">
                     <div class="stat-card nature-accent nature-accent-forest">
                         <i class="bi bi-truck fs-2"></i>
-                        <div class="stat-number">{{ total_vehicles }}</div>
-                        <div class="stat-label">車輛數量</div>
+                        <div class="stat-number">{{ featured_vehicles }}</div>
+                        <div class="stat-label">
+                            {% if featured_event %}
+                            車輛數
+                            {% else %}
+                            暫無活動
+                            {% endif %}
+                        </div>
                     </div>
                     </div>
                 </div>
@@ -76,9 +88,35 @@
             <div class="card-body">
                 {% if upcoming_events %}
                     {% for event in upcoming_events %}
-                    <div class="mb-3">
-                        <h5><a href="{{ url_for('events.detail', event_id=event.id) }}" class="text-decoration-none">{{ event.title }}</a></h5>
-                        <small class="text-muted">{{ event.event_date }}</small>
+                    {% set days_diff = (event.effective_start - today).days if today else 0 %}
+                    {% set stats = event_stats.get(event.id, {'people': 0, 'vehicles': 0}) %}
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h6 class="mb-0"><a href="{{ url_for('events.detail', event_id=event.id) }}" class="text-decoration-none">{{ event.title }}</a></h6>
+                            {% if days_diff <= 0 %}
+                            <span class="badge bg-danger">今天</span>
+                            {% elif days_diff == 1 %}
+                            <span class="badge bg-warning text-dark">明天</span>
+                            {% elif days_diff <= 7 %}
+                            <span class="badge bg-info">{{ days_diff }}天後</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ days_diff }}天後</span>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted d-block mb-1"><i class="bi bi-calendar3 me-1"></i>{{ event.effective_start }}{% if event.duration_days > 1 %} ~ {{ event.effective_end }}{% endif %}</small>
+                        {% if event.max_attendees %}
+                        {% set pct = (stats.people / event.max_attendees * 100) | round %}
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span><i class="bi bi-people me-1"></i>{{ stats.people }}/{{ event.max_attendees }}</span>
+                            <span class="text-muted">{{ pct }}%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar {% if pct >= 100 %}bg-danger{% elif pct >= 80 %}bg-warning{% else %}bg-success{% endif %}"
+                                 style="width: {{ [pct, 100] | min }}%;"></div>
+                        </div>
+                        {% else %}
+                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-truck ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 {% else %}
@@ -89,6 +127,29 @@
                 </div>
             </div>
         </div>
+        <!-- 最近結束的活動 -->
+        {% if past_events %}
+        <div class="card shadow mb-4 mt-4">
+            <div class="card-header bg-dark text-light">
+                <h4 class="mb-0"><i class="bi bi-clock-history me-1"></i>最近結束</h4>
+            </div>
+            <div class="card-body">
+                {% for event in past_events %}
+                {% set ps = past_stats.get(event.id, {'people': 0, 'vehicles': 0}) %}
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <div>
+                        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="text-decoration-none fw-bold small">{{ event.title }}</a>
+                        <br><small class="text-muted">{{ event.effective_start }}</small>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ ps.people }} 人</small>
+                        <br><small class="text-muted"><i class="bi bi-truck me-1"></i>{{ ps.vehicles }} 車</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

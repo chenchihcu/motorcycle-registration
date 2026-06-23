@@ -11,7 +11,7 @@ message_bp = Blueprint("message", __name__, url_prefix="/messages")
 def new():
     form = MessageForm()
     form.event_id.choices = [(0, "--- 不指定活動 ---")] + [
-        (e.id, e.title) for e in Event.query.order_by(Event.event_date.desc()).all()
+        (e.id, e.title) for e in Event.query.order_by(Event.event_date_start.desc()).all()
     ]
     if form.validate_on_submit():
         msg = Message(

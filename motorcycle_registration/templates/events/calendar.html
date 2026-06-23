@@ -20,16 +20,17 @@
         <table class="table table-bordered mb-0 calendar-table">
             <thead class="table-light">
                 <tr>
-                    <th class="text-center text-danger">日</th>
                     <th class="text-center">一</th>
                     <th class="text-center">二</th>
                     <th class="text-center">三</th>
                     <th class="text-center">四</th>
                     <th class="text-center">五</th>
                     <th class="text-center text-danger">六</th>
+                    <th class="text-center text-danger">日</th>
                 </tr>
             </thead>
             <tbody>
+                {% set today_date = today_date or '' %}
                 {% for week in calendar_rows %}
                 <tr style="height: 90px;">
                     {% for day in week %}
@@ -37,7 +38,13 @@
                         {% if day > 0 %}style="cursor:pointer;"{% endif %}>
                         {% if day > 0 %}
                         <div class="d-flex justify-content-between">
-                            <small class="fw-bold {% if loop.index == 1 or loop.index == 7 %}text-danger{% endif %}">{{ day }}</small>
+                            <small class="fw-bold {% if loop.index == 6 or loop.index == 7 %}text-danger{% endif %} {% if today_date and year == today_date.year and month == today_date.month and day == today_date.day %}text-primary{% endif %}">
+                                {% if today_date and year == today_date.year and month == today_date.month and day == today_date.day %}
+                                <span class="badge bg-primary rounded-pill">{{ day }}</span>
+                                {% else %}
+                                {{ day }}
+                                {% endif %}
+                            </small>
                         </div>
                         {% set day_events = events_by_day.get(day, []) %}
                         {% if day_events %}
