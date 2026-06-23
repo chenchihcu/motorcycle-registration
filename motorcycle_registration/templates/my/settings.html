@@ -50,17 +50,17 @@
                     {{ password_form.hidden_tag() }}
                     <div class="mb-3">
                         {{ password_form.old_password.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
-                        {{ password_form.old_password(class="form-control", placeholder="請輸入目前密碼") }}
+                        {{ password_form.old_password(class="form-control", placeholder="請輸入目前密碼", autocomplete="current-password") }}
                         {% for error in password_form.old_password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
                         {{ password_form.new_password.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
-                        {{ password_form.new_password(class="form-control", placeholder="請輸入新密碼") }}
+                        {{ password_form.new_password(class="form-control", placeholder="請輸入新密碼", autocomplete="new-password") }}
                         {% for error in password_form.new_password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
                         {{ password_form.confirm_password.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
-                        {{ password_form.confirm_password(class="form-control", placeholder="再次輸入新密碼") }}
+                        {{ password_form.confirm_password(class="form-control", placeholder="再次輸入新密碼", autocomplete="new-password") }}
                         {% for error in password_form.confirm_password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="d-grid">
