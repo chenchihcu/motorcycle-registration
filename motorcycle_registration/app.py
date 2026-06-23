@@ -12,18 +12,22 @@ def create_app():
     with app.app_context():
         db.create_all()
         # 自動建立預設管理員（如尚未存在）
-        from werkzeug.security import generate_password_hash
-        from models import User
-        if not User.query.filter_by(username='admin').first():
-            admin = User(
-                username='admin',
-                password_hash=generate_password_hash('admin123'),
-                name='管理員',
-                license_plate='ADMIN-001',
-                role='admin',
-            )
-            db.session.add(admin)
-            db.session.commit()
+        try:
+            from werkzeug.security import generate_password_hash
+            from models import User
+            if not User.query.filter_by(username='admin').first():
+                admin = User(
+                    username='admin',
+                    password_hash=generate_password_hash('admin123'),
+                    name='管理員',
+                    license_plate='ADMIN-001',
+                    role='admin',
+                )
+                db.session.add(admin)
+                db.session.commit()
+                print('[startup] ✅ 預設管理員 admin 已建立')
+        except Exception as e:
+            print(f'[startup] ⚠️ 建立管理員失敗: {e}')
 
     from routes.auth import auth_bp, init_login_manager
     from routes.events import events_bp
@@ -64,6 +68,30 @@ def create_app():
         except Exception:
             ctx["unread_count"] = 0
         return ctx
+
+    # 一鍵建立預設管理員（僅限首次使用，避免未授權存取）
+    @app.route('/setup-admin')
+    def setup_admin():
+        import hashlib, hmac
+        key = app.config.get('SECRET_KEY', 'dev')
+        sig = request.args.get('sig', '')
+        expected = hmac.new(key.encode(), b'setup-admin', hashlib.sha256).hexdigest()[:16]
+        if sig != expected:
+            return 'Unauthorized', 403
+        from models import User
+        from werkzeug.security import generate_password_hash
+        if User.query.filter_by(username='admin').first():
+            return 'Admin already exists', 200
+        admin = User(
+            username='admin',
+            password_hash=generate_password_hash('admin123'),
+            name='管理員',
+            license_plate='ADMIN-001',
+            role='admin',
+        )
+        db.session.add(admin)
+        db.session.commit()
+        return 'Admin created: admin / admin123', 200
 
     @app.errorhandler(404)
     def not_found(e):
