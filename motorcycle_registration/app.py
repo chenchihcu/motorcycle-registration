@@ -69,15 +69,9 @@ def create_app():
             ctx["unread_count"] = 0
         return ctx
 
-    # 一鍵建立預設管理員（僅限首次使用，避免未授權存取）
+    # 一鍵建立預設管理員（僅在無管理員時可呼叫，首次安裝用）
     @app.route('/setup-admin')
     def setup_admin():
-        import hashlib, hmac
-        key = app.config.get('SECRET_KEY', 'dev')
-        sig = request.args.get('sig', '')
-        expected = hmac.new(key.encode(), b'setup-admin', hashlib.sha256).hexdigest()[:16]
-        if sig != expected:
-            return 'Unauthorized', 403
         from models import User
         from werkzeug.security import generate_password_hash
         if User.query.filter_by(username='admin').first():
