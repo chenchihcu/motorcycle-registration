@@ -22,7 +22,7 @@
         {% set is_past = event.event_date < today %}
         {% set is_today = event.event_date == today %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card shadow card-hover h-100">
+            <div class="card shadow card-hover h-100 nature-card nature-card-forest">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h5 class="card-title mb-0">{{ event.title }}</h5>
@@ -86,10 +86,10 @@
         </ul>
     </nav>
 {% else %}
-    <div class="text-center py-5">
+    <div class="text-center py-5 nature-empty nature-empty-mountain">
         <p class="text-muted">目前還沒有活動</p>
         {% if current_user.is_authenticated and current_user.role == 'admin' %}
-        <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary">建立第一個活動</a>
+        <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary btn-nature-hover">建立第一個活動</a>
         {% endif %}
     </div>
 {% endif %}

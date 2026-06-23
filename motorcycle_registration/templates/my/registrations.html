@@ -3,10 +3,9 @@
 <h3 class="mb-4"><i class="bi bi-calendar-check me-1"></i>我的活動</h3>
 
 {% if not active and not history %}
-<div class="text-center py-5">
-    <i class="bi bi-calendar-plus display-3 text-muted"></i>
+    <div class="text-center py-5 nature-empty nature-empty-forest">
     <p class="text-muted mt-3 mb-4">您目前還沒有任何報名紀錄</p>
-    <a href="{{ url_for('events.list_events') }}" class="btn btn-primary">
+    <a href="{{ url_for('events.list_events') }}" class="btn btn-primary btn-nature-hover">
         <i class="bi bi-eye me-1"></i>瀏覽活動
     </a>
 </div>
