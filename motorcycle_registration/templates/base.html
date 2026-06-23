@@ -16,18 +16,18 @@
     <!-- 導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark nature-nav">
         <div class="container">
-            <a class="nav-link d-inline-block me-1" href="javascript:history.back()" aria-label="返回上一頁" title="返回上一頁"><i class="bi bi-arrow-left fs-5"></i></a>
+            <a class="nav-link d-inline-block me-1" href="javascript:void(0)" id="navBackBtn" data-fallback="{{ url_for('bulletin.dashboard') }}" aria-label="返回上一頁" title="返回上一頁"><i class="bi bi-arrow-left fs-5"></i></a>
             <a class="navbar-brand" href="{{ url_for('bulletin.dashboard') }}"><i class="bi bi-motorcycle me-1"></i>{{ app_name }}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="切換選單" title="切換選單">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if active_endpoint.startswith('bulletin.') %}active{% endif %}" href="{{ url_for('bulletin.dashboard') }}">公告欄</a>
+                        <a class="nav-link {% if active_endpoint.startswith('bulletin.') %}active{% endif %}" href="{{ url_for('bulletin.dashboard') }}"><i class="bi bi-megaphone me-1"></i>公告</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_endpoint.startswith('events.list_events') %}active{% endif %}" href="{{ url_for('events.list_events') }}">活動列表</a>
+                        <a class="nav-link {% if active_endpoint.startswith('events.list_events') %}active{% endif %}" href="{{ url_for('events.list_events') }}"><i class="bi bi-list-check me-1"></i>活動</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if active_endpoint.startswith('events.calendar') %}active{% endif %}" href="{{ url_for('events.calendar') }}"><i class="bi bi-calendar3 me-1"></i>日曆</a>

@@ -97,6 +97,11 @@
                     return;
                 }
 
+                // 確認表單通過瀏覽器驗證，避免驗證失敗卻鎖住畫面
+                if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+                    return;
+                }
+
                 form.dataset.submitting = 'true';
 
                 // 為送出按鈕加上 loading 動畫
@@ -118,12 +123,37 @@
     }
 
     /* =================================================================
-     * 3. 初始化
+     * 3. 智慧返回按鈕
+     *    同站來源 → history.back()；外部/直接進入 → 回首頁
+     * ================================================================= */
+
+    function initSmartBackButton() {
+        var backBtn = document.getElementById('navBackBtn');
+        if (!backBtn) return;
+
+        backBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            try {
+                if (document.referrer && new URL(document.referrer).origin === location.origin) {
+                    history.back();
+                } else {
+                    // 無 referrer 或來自外部：導向儀表板
+                    window.location.href = backBtn.getAttribute('data-fallback') || '/';
+                }
+            } catch (_) {
+                window.location.href = backBtn.getAttribute('data-fallback') || '/';
+            }
+        });
+    }
+
+    /* =================================================================
+     * 4. 初始化
      * ================================================================= */
 
     function init() {
         initToastNotifications();
         initFormLoading();
+        initSmartBackButton();
     }
 
     if (document.readyState === 'loading') {

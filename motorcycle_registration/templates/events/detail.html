@@ -171,7 +171,8 @@
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-people me-1"></i>報名車友（{{ total_vehicles }} 車）</h5>
             </div>
-            <div class="card-body p-0">
+            <!-- 桌面版表格 -->
+            <div class="card-body p-0 d-none d-md-block">
                 <div class="table-responsive">
                     <table class="table table-striped mb-0">
                         <thead>
@@ -202,6 +203,25 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <!-- 手機版列表 -->
+            <div class="card-body d-md-none">
+                {% for reg in attendee_list %}
+                <div class="d-flex justify-content-between align-items-center py-2 {% if not loop.last %}border-bottom{% endif %}">
+                    <div>
+                        <strong>{{ reg.user.name }}</strong>
+                        <span class="text-muted ms-2">{{ reg.attendees_count }} 人</span>
+                        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                        <div class="small text-muted">
+                            <code>{{ reg.user.license_plate }}</code>
+                            {% if reg.user.phone %} · {{ reg.user.phone }}{% endif %}
+                            {% if reg.user.emergency_contact_name %} · 緊急：{{ reg.user.emergency_contact_name }}{% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <small class="text-muted text-nowrap ms-2">{{ reg.registered_at.strftime('%m-%d %H:%M') }}</small>
+                </div>
+                {% endfor %}
             </div>
         </div>
         {% endif %}

@@ -7,9 +7,9 @@
     <div class="col-md-6 col-lg-4">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="搜尋活動名稱或描述..." value="{{ request.args.get('q', '') }}">
-            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            <button type="submit" class="btn btn-primary" aria-label="搜尋"><i class="bi bi-search"></i></button>
             {% if request.args.get('q') %}
-            <a href="{{ url_for('events.list_events') }}" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i></a>
+            <a href="{{ url_for('events.list_events') }}" class="btn btn-outline-secondary" aria-label="清除搜尋" title="清除搜尋"><i class="bi bi-x-circle"></i></a>
             {% endif %}
         </div>
     </div>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-truck ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
-                        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary" aria-label="查看詳情" title="查看詳情"><i class="bi bi-eye"></i></a>
                     </div>
                 </div>
             </div>

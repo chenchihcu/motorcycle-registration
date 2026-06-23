@@ -154,6 +154,12 @@
                         } else {
                             window.location.href = href;
                         }
+                    } else {
+                        // 按鈕在表單內：提交所屬表單（保留 CSRF token）
+                        var parentForm = target.closest('form');
+                        if (parentForm) {
+                            parentForm.submit();
+                        }
                     }
                 }
             });
