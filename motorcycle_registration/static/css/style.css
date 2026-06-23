@@ -92,7 +92,7 @@
     --gradient-waterfall: linear-gradient(135deg, #4a90d9, #c8e6f5);
 
     /* SVG Patterns (data URI) */
-    --pattern-mist: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='20' cy='30' r='15' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.3'/%3E%3Ccircle cx='60' cy='50' r='25' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.2'/%3E%3Ccircle cx='100' cy='20' r='10' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.3'/%3E%3Ccircle cx='40' cy='90' r='20' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.2'/%3E%3Ccircle cx='90' cy='80' r='12' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.25'/%3E%3C/svg%3E");
+    --pattern-mist: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='20' cy='30' r='15' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.06'/%3E%3Ccircle cx='60' cy='50' r='25' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.05'/%3E%3Ccircle cx='100' cy='20' r='10' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.06'/%3E%3Ccircle cx='40' cy='90' r='20' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.05'/%3E%3Ccircle cx='90' cy='80' r='12' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.06'/%3E%3C/svg%3E");
     --pattern-leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M25 70 Q30 55 40 65 Q35 75 25 70Z' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.25'/%3E%3Cpath d='M70 30 Q78 20 85 28 Q80 38 70 30Z' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.2'/%3E%3Cpath d='M95 85 Q100 72 108 80 Q102 90 95 85Z' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.3'/%3E%3C/svg%3E");
     --pattern-ripples: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='15' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.3'/%3E%3Ccircle cx='60' cy='60' r='25' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.2'/%3E%3Ccircle cx='60' cy='60' r='35' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.15'/%3E%3C/svg%3E");
 }
@@ -165,8 +165,15 @@ a:hover { color: var(--color-primary-action-hover); }
 .card-header.bg-dark {
     background-color: var(--color-primary-surface) !important;
 }
-.card-header h4, .card-header h5 {
+/* 僅深色 header 內的標題用白字；無 bg-dark 的 plain header 沿用深色文字，避免白字壓淺底隱形 */
+.card-header.bg-dark h4, .card-header.bg-dark h5 {
     color: var(--color-text-on-primary);
+    font-weight: 600;
+}
+/* plain card-header（無 bg-dark）標題：深色可讀 */
+.card-header:not(.bg-dark) h4,
+.card-header:not(.bg-dark) h5 {
+    color: var(--color-text);
     font-weight: 600;
 }
 
@@ -327,6 +334,11 @@ a:hover { color: var(--color-primary-action-hover); }
     --bs-table-accent-bg: rgba(58,77,107,0.04);
     color: var(--color-text);
 }
+/* 表格內車牌等 <code>：用中性內文色，避免 Bootstrap 預設粉紅誤導為連結/錯誤 */
+.table code {
+    color: var(--color-text);
+    background-color: transparent;
+}
 
 /* ---------- 8. Toast 浮動通知 (Flash 訊息) ---------- */
 .toast-container {
@@ -441,6 +453,8 @@ a:hover { color: var(--color-primary-action-hover); }
     padding: var(--space-md) 0;
 }
 .footer small { color: rgba(255,255,255,0.70); }
+/* Bootstrap .text-muted 解析為深色，壓在深藍頁腳上幾乎隱形；於頁腳改用淺色（對比 ≈ 6:1，達 WCAG AA） */
+.footer .text-muted { color: rgba(255,255,255,0.65) !important; }
 
 /* ---------- 13. Badge ---------- */
 .badge {
@@ -516,10 +530,7 @@ a:hover { color: var(--color-primary-action-hover); }
         right: var(--space-sm);
         max-width: none;
     }
-    /* 行動版移除 stat-card 左側條紋 */
-    .stat-card::before {
-        display: none;
-    }
+    /* 行動版調整 (stat-card 左側條紋已由 border-left 取代無需隱藏) */
 }
 
 /* ============================================================
@@ -564,7 +575,7 @@ body.nature-bg {
 }
 .navbar.bg-dark {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* ---------- Footer 極淡楓葉 pattern ---------- */
@@ -733,17 +744,6 @@ body.nature-bg {
 .stat-card {
     position: relative;
 }
-.stat-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 10%;
-    height: 80%;
-    width: 3px;
-    background: var(--color-nature-forest);
-    border-radius: 2px;
-    opacity: 0.3;
-}
 
 /* ---------- 16l. 下拉選單 hover ---------- */
 .dropdown-item.nature-accent:hover {
@@ -760,4 +760,15 @@ body.nature-bg {
 }
 .badge.bg-danger {
     background: linear-gradient(135deg, var(--color-nature-maple), #dc3545) !important;
+}
+
+/* ---------- 17. P2 一致性與對比微調 ---------- */
+/* 日曆週末標題：紅字壓深色 header 對比不足，改用較亮的紅（對比 ≈ 5.5:1，達 AA） */
+.calendar-table thead th.text-danger {
+    color: #ff8a93 !important;
+}
+/* 儀表板統計數字：統一品牌強調色，與公告儀表板 .stat-number 視覺一致 */
+.kpi-number {
+    color: var(--color-primary-action);
+    font-weight: 700;
 }

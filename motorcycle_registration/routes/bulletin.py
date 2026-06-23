@@ -65,4 +65,5 @@ def dashboard():
         event_stats=event_stats,
         past_events=past_events,
         past_stats=past_stats,
+        today=today,
     )

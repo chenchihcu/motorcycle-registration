@@ -10,14 +10,17 @@
                     <div class="mb-3">
                         {{ form.subject.label(class="form-label") }}
                         {{ form.subject(class="form-control", placeholder="主旨（選填）") }}
+                        {% for error in form.subject.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
                         {{ form.event_id.label(class="form-label") }}
                         {{ form.event_id(class="form-select") }}
+                        {% for error in form.event_id.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
-                        {{ form.content.label(class="form-label") }}
+                        {{ form.content.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
                         {{ form.content(class="form-control", rows="5", placeholder="請輸入您的訊息內容") }}
+                        {% for error in form.content.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="d-grid">
                         {{ form.submit(class="btn btn-primary") }}

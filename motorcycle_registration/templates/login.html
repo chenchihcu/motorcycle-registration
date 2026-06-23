@@ -27,12 +27,14 @@
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.username.label(class="form-label") }}
+                        {{ form.username.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
                         {{ form.username(class="form-control", placeholder="管理員帳號") }}
+                        {% for error in form.username.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
+                        {{ form.password.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
                         {{ form.password(class="form-control", placeholder="管理員密碼") }}
+                        {% for error in form.password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="d-grid">
                         {{ form.submit(class="btn btn-primary") }}

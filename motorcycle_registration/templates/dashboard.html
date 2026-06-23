@@ -8,8 +8,8 @@
                 <h4 class="mb-0">公告欄</h4>
                 <form method="GET" action="{{ url_for('bulletin.dashboard') }}" class="d-flex">
                     <div class="input-group input-group-sm">
-                        <input type="text" name="q" class="form-control" placeholder="搜尋公告..." value="{{ request.args.get('q', '') }}" style="max-width:180px">
-                        <button type="submit" class="btn btn-light btn-sm"><i class="bi bi-search"></i></button>
+                        <input type="text" name="q" id="bulletinSearch" class="form-control" placeholder="搜尋公告..." value="{{ request.args.get('q', '') }}" aria-label="搜尋公告" style="max-width:180px">
+                        <button type="submit" class="btn btn-light btn-sm" aria-label="搜尋"><i class="bi bi-search"></i></button>
                         {% if request.args.get('q') %}
                         <a href="{{ url_for('bulletin.dashboard') }}" class="btn btn-light btn-sm"><i class="bi bi-x-circle"></i></a>
                         {% endif %}

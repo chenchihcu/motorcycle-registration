@@ -5,7 +5,7 @@
     <div class="col-md-3 col-6 mb-3">
         <div class="card prominent text-center nature-card nature-card-maple">
             <div class="card-body">
-                <div class="fs-2 fw-bold">{{ total_events }}</div>
+                <div class="fs-2 fw-bold kpi-number">{{ total_events }}</div>
                 <small class="text-muted">總活動數</small>
             </div>
         </div>
@@ -13,7 +13,7 @@
     <div class="col-md-3 col-6 mb-3">
         <div class="card prominent text-center nature-card nature-card-forest">
             <div class="card-body">
-                <div class="fs-2 fw-bold">{{ upcoming_events }}</div>
+                <div class="fs-2 fw-bold kpi-number">{{ upcoming_events }}</div>
                 <small class="text-muted">即將到來</small>
             </div>
         </div>
@@ -21,7 +21,7 @@
     <div class="col-md-3 col-6 mb-3">
         <div class="card prominent text-center nature-card nature-card-mountain">
             <div class="card-body">
-                <div class="fs-2 fw-bold">{{ total_users }}</div>
+                <div class="fs-2 fw-bold kpi-number">{{ total_users }}</div>
                 <small class="text-muted">總使用者</small>
             </div>
         </div>
@@ -29,7 +29,7 @@
     <div class="col-md-3 col-6 mb-3">
         <div class="card prominent text-center nature-card nature-card-plant">
             <div class="card-body">
-                <div class="fs-2 fw-bold">{{ active_regs }}</div>
+                <div class="fs-2 fw-bold kpi-number">{{ active_regs }}</div>
                 <small class="text-muted">有效報名</small>
             </div>
         </div>
@@ -94,10 +94,10 @@
         <div class="card shadow nature-card nature-card-plant">
             <div class="card-body">
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ url_for('admin.events_list') }}" class="btn btn-primary"><i class="bi bi-gear me-1"></i>活動管理</a>
-                    <a href="{{ url_for('admin.events_new') }}" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i>建立活動</a>
-                    <a href="{{ url_for('admin.bulletin') }}" class="btn btn-info text-white"><i class="bi bi-megaphone me-1"></i>公告管理</a>
-                    <a href="{{ url_for('admin.messages') }}" class="btn btn-warning"><i class="bi bi-envelope me-1"></i>訊息管理
+                    <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>建立活動</a>
+                    <a href="{{ url_for('admin.events_list') }}" class="btn btn-outline-primary"><i class="bi bi-gear me-1"></i>活動管理</a>
+                    <a href="{{ url_for('admin.bulletin') }}" class="btn btn-outline-primary"><i class="bi bi-megaphone me-1"></i>公告管理</a>
+                    <a href="{{ url_for('admin.messages') }}" class="btn btn-outline-primary"><i class="bi bi-envelope me-1"></i>訊息管理
                         {% if unread_messages > 0 %}
                         <span class="badge bg-danger">{{ unread_messages }}</span>
                         {% endif %}
@@ -142,7 +142,20 @@
         const res = await fetch('{{ url_for("admin.registration_trends") }}');
         const data = await res.json();
 
-        const ctx = document.getElementById('registrationChart').getContext('2d');
+        const canvas = document.getElementById('registrationChart');
+        const values = data.values || [];
+        const total = values.reduce(function(a, b) { return a + (b || 0); }, 0);
+        const nonZeroDays = values.filter(function(v) { return v > 0; }).length;
+
+        // 空資料狀態：避免空白圖表或單一長條被誤認為壞掉
+        if (total === 0) {
+            canvas.closest('.card-body').innerHTML =
+                '<div class="text-center text-muted py-5">' +
+                '<i class="bi bi-bar-chart d-block fs-1 mb-2"></i>近 30 天尚無報名紀錄</div>';
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
@@ -175,6 +188,14 @@
                 }
             }
         });
+
+        // 稀疏資料提示：報名集中於少數日期時，補一行說明避免誤讀
+        if (nonZeroDays <= 2) {
+            const note = document.createElement('p');
+            note.className = 'text-muted small mb-0 mt-2';
+            note.innerHTML = '<i class="bi bi-info-circle me-1"></i>報名集中於少數日期，趨勢圖僅供參考。';
+            canvas.closest('.card-body').appendChild(note);
+        }
     } catch(e) {
         console.warn('Chart load failed:', e);
     }

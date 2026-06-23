@@ -8,12 +8,14 @@
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.title.label(class="form-label") }}
+                        {{ form.title.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
                         {{ form.title(class="form-control", placeholder="請輸入活動名稱") }}
+                        {% for error in form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
-                        {{ form.event_date_start.label(class="form-label") }}
+                        {{ form.event_date_start.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
                         {{ form.event_date_start(class="form-control", type="date") }}
+                        {% for error in form.event_date_start.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
                         {{ form.event_date_end.label(class="form-label") }}
@@ -32,8 +34,9 @@
                         {{ form.max_vehicles(class="form-control", type="number", min="1", placeholder="留空表示不限制車輛數") }}
                     </div>
                     <div class="mb-3">
-                        {{ form.description.label(class="form-label") }}
+                        {{ form.description.label(class="form-label") }}<span class="text-danger" aria-hidden="true"> *</span>
                         {{ form.description(class="form-control", rows="5", placeholder="請輸入活動內容概述") }}
+                        {% for error in form.description.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
                     </div>
                     <div class="mb-3">
                         {{ form.google_maps_embed_url.label(class="form-label") }}

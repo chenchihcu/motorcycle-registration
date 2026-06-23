@@ -10,16 +10,38 @@
     'use strict';
 
     /**
-     * 對單一欄位執行驗證，更新 .is-valid / .is-invalid 狀態
+     * 顯示／更新欄位的錯誤文字（不只靠紅色邊框傳達，符合無障礙：狀態不可只靠顏色）
+     * 使用與伺服器端錯誤相同的樣式（.text-danger.small），並標記 js-field-error 以利清除
+     */
+    function setFieldError(field, message) {
+        let holder = field.parentNode.querySelector('.js-field-error');
+        if (!holder) {
+            holder = document.createElement('div');
+            holder.className = 'text-danger small mt-1 js-field-error';
+            field.insertAdjacentElement('afterend', holder);
+        }
+        holder.textContent = message;
+    }
+
+    function clearFieldError(field) {
+        const holder = field.parentNode.querySelector('.js-field-error');
+        if (holder) holder.remove();
+    }
+
+    /**
+     * 對單一欄位執行驗證，更新 .is-valid / .is-invalid 狀態與錯誤文字
      */
     function validateField(field) {
         const validity = field.validity;
         if (validity.valid) {
             field.classList.remove('is-invalid');
             field.classList.add('is-valid');
+            clearFieldError(field);
         } else {
             field.classList.remove('is-valid');
             field.classList.add('is-invalid');
+            // 顯示瀏覽器原生驗證訊息，說明「如何修正」而非只給紅框
+            setFieldError(field, field.validationMessage || '此欄位填寫有誤');
         }
     }
 
@@ -28,6 +50,7 @@
      */
     function clearValidation(field) {
         field.classList.remove('is-valid', 'is-invalid');
+        clearFieldError(field);
     }
 
     /**
