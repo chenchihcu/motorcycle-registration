@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-6">
                         <div class="stat-card">
-                            <i class="bi bi-motorcycle stat-icon"></i>
+                            <i class="bi bi-scooter stat-icon"></i>
                             <div class="stat-number">{{ total_vehicles }}</div>
                             <div class="stat-label">車輛數</div>
                         </div>
@@ -234,7 +234,7 @@
                     <a href="{{ url_for('admin.export_route', event_id=event.id) }}" class="btn btn-outline-secondary">匯出路線表 (CSV)</a>
                 </div>
                 {% endif %}
-                <a href="{{ url_for('events.export_ics', event_id=event.id) }}" class="btn btn-outline-success w-100 mt-2"><i class="bi bi-calendar-plus me-1"></i>加入行事曆</a>
+                <a href="{{ url_for('events.export_ics', event_id=event.id) }}" class="btn btn-outline-secondary w-100 mt-2"><i class="bi bi-calendar-plus me-1"></i>加入行事曆</a>
             </div>
         </div>
     </div>

@@ -22,7 +22,7 @@
                         {{ form.event_date_end(class="form-control", type="date") }}
                         <small class="text-muted">若為單日活動可留空，系統自動使用開始日期</small>
                         <div id="duration-display" class="mt-1" style="display:none;">
-                            <span class="badge bg-info"><i class="bi bi-clock-history me-1"></i>活動天數：<span id="duration-days">1</span> 天</span>
+                            <span class="badge bg-secondary"><i class="bi bi-clock-history me-1"></i>活動天數：<span id="duration-days">1</span> 天</span>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -62,7 +62,7 @@
                             </div>
                             {% endif %}
                         </div>
-                        <button type="button" class="btn btn-outline-success btn-sm mt-1" id="add-waypoint"><i class="bi bi-plus-lg me-1"></i>新增途經點</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm mt-1" id="add-waypoint"><i class="bi bi-plus-lg me-1"></i>新增途經點</button>
                         <input type="hidden" name="route_waypoints" id="route_waypoints_hidden" value="{{ form.route_waypoints.data or '' }}">
                         <small class="text-muted d-block mt-1">可動態新增/刪除途經點，儲存時自動合併</small>
                     </div>

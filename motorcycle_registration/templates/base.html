@@ -19,7 +19,7 @@
             {% if active_endpoint != 'bulletin.dashboard' %}
             <a class="nav-link d-inline-block me-1" href="{{ url_for('bulletin.dashboard') }}" id="navBackBtn" aria-label="返回上一頁" title="返回上一頁"><i class="bi bi-arrow-left fs-5"></i></a>
             {% endif %}
-            <a class="navbar-brand" href="{{ url_for('bulletin.dashboard') }}"><i class="bi bi-motorcycle me-1"></i>{{ app_name }}</a>
+            <a class="navbar-brand" href="{{ url_for('bulletin.dashboard') }}"><i class="bi bi-scooter me-1"></i>{{ app_name }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="切換選單" title="切換選單">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -112,7 +112,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-2 mb-md-0">
-                    <small><i class="bi bi-motorcycle me-1"></i><strong>{{ app_name }}</strong></small>
+                    <small><i class="bi bi-scooter me-1"></i><strong>{{ app_name }}</strong></small>
 
                 </div>
                 <div class="col-md-3 mb-2 mb-md-0">
@@ -121,7 +121,7 @@
                     <a href="{{ url_for('bulletin.dashboard') }}" class="text-light small text-decoration-none d-block">公告欄</a>
                 </div>
                 <div class="col-md-3 text-md-end">
-                    <small class="text-muted d-block">v1.2.0</small>
+                    <small class="text-muted d-block">v2.1.0</small>
                     <small class="text-muted">&copy; {{ current_year }} All rights reserved.</small>
                 </div>
             </div>

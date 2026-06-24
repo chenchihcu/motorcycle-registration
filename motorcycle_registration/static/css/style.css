@@ -22,9 +22,11 @@
     --color-text-muted: #666666;
     --color-text-on-primary: #ffffff;
 
-    /* Borders & Accent */
+    /* Borders */
     --color-border: #D4D4D4;
-    --color-accent: #8A8A8A;
+    /* NOTE: --color-accent is defined below in the Warm Amber block (#E07A3F).
+       The previous grey (#8A8A8A) duplicate was dead — every --color-accent
+       reference (focus ring, nav active, table header, stat icon) wants amber. */
 
     /* Role colors (actions, selection, nav) */
     --color-primary-action: #4A4A4A;

@@ -32,7 +32,7 @@
                     <div class="d-flex gap-1">
                     {% if not msg.is_read %}
                     <form method="POST" action="{{ url_for('admin.messages_read', msg_id=msg.id) }}" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check2-all me-1"></i>標記已讀</button>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-check2-all me-1"></i>標記已讀</button>
                     </form>
                     {% endif %}
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#replyForm-{{ msg.id }}">

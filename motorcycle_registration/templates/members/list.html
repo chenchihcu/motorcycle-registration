@@ -26,7 +26,7 @@
                         <td>
                             {{ member.name }}
                             {% if member == current_user %}
-                            <span class="badge bg-info text-dark ms-1">我</span>
+                            <span class="badge bg-primary ms-1">我</span>
                             {% endif %}
                         </td>
                         {% if current_user.role == 'admin' %}
@@ -58,7 +58,7 @@
                 <div>
                     <strong>{{ member.name }}</strong>
                     {% if member == current_user %}
-                    <span class="badge bg-info text-dark ms-1">我</span>
+                    <span class="badge bg-primary ms-1">我</span>
                     {% endif %}
                     {% if member.role == 'admin' %}
                     <span class="badge bg-danger ms-1">管理員</span>

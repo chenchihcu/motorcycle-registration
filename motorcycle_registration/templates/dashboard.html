@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-6">
                     <div class="stat-card">
-                        <i class="bi bi-motorcycle stat-icon"></i>
+                        <i class="bi bi-scooter stat-icon"></i>
                         <div class="stat-number">{{ featured_vehicles }}</div>
                         <div class="stat-label">{% if featured_event %}車輛數{% else %}暫無活動{% endif %}</div>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="d-flex align-items-start gap-2">
                         <i class="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0 mt-1"></i>
                         <div>
-                            <strong><i class="bi bi-motorcycle me-1"></i>報名取消費用說明</strong>
+                            <strong><i class="bi bi-scooter me-1"></i>報名取消費用說明</strong>
                             <p class="mb-1 small mt-1">請各位車友報名前務必確認個人時間與參與意願。</p>
                             <p class="mb-0 small">活動報名後，如因個人因素臨時取消，且已產生餐費、住宿、訂金、保險費或其他代訂／預付費用，該筆費用將由取消者自行負擔 100%，不得要求由主辦或其他車友分攤。</p>
                         </div>
@@ -111,7 +111,7 @@
                                  style="width: {{ [pct, 100] | min }}%;"></div>
                         </div>
                         {% else %}
-                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-motorcycle ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
+                        <small class="text-muted"><i class="bi bi-people me-1"></i>{{ stats.people }} 人 · <i class="bi bi-scooter ms-1 me-1"></i>{{ stats.vehicles }} 車</small>
                         {% endif %}
                     </div>
                     {% endfor %}
@@ -142,7 +142,7 @@
                     </div>
                     <div class="text-end">
                         <small class="text-muted"><i class="bi bi-people me-1"></i>{{ ps.people }} 人</small>
-                        <br><small class="text-muted"><i class="bi bi-motorcycle me-1"></i>{{ ps.vehicles }} 車</small>
+                        <br><small class="text-muted"><i class="bi bi-scooter me-1"></i>{{ ps.vehicles }} 車</small>
                     </div>
                 </div>
                 {% endfor %}
