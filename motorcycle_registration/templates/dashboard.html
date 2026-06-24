@@ -19,30 +19,23 @@
             <div class="card-body">
                 <!-- 統計資訊 -->
                 <div class="row mb-4">
+                    {% if featured_event %}
+                    <div class="col-12 mb-2">
+                        <h6 class="text-muted mb-0"><i class="bi bi-calendar-event me-1"></i><a href="{{ url_for('events.detail', event_id=featured_event.id) }}">{{ featured_event.title }}</a></h6>
+                    </div>
+                    {% endif %}
                     <div class="col-6">
                     <div class="stat-card">
-                        <i class="bi bi-people fs-2"></i>
+                        <i class="bi bi-people stat-icon"></i>
                         <div class="stat-number">{{ featured_people }}</div>
-                        <div class="stat-label">
-                            {% if featured_event %}
-                            <a href="{{ url_for('events.detail', event_id=featured_event.id) }}" class="text-decoration-none">{{ featured_event.title }}</a> 報名人數
-                            {% else %}
-                            暫無活動
-                            {% endif %}
-                        </div>
+                        <div class="stat-label">{% if featured_event %}報名人數{% else %}暫無活動{% endif %}</div>
                     </div>
                     </div>
                     <div class="col-6">
                     <div class="stat-card">
-                        <i class="bi bi-motorcycle fs-2"></i>
+                        <i class="bi bi-motorcycle stat-icon"></i>
                         <div class="stat-number">{{ featured_vehicles }}</div>
-                        <div class="stat-label">
-                            {% if featured_event %}
-                            車輛數
-                            {% else %}
-                            暫無活動
-                            {% endif %}
-                        </div>
+                        <div class="stat-label">{% if featured_event %}車輛數{% else %}暫無活動{% endif %}</div>
                     </div>
                     </div>
                 </div>
@@ -73,7 +66,10 @@
                         </div>
                         {% endfor %}
                     {% else %}
-                        <p class="text-muted text-center py-3" id="emptyBulletin">目前尚無公告</p>
+                        <div class="empty-state" id="emptyBulletin">
+                            <i class="bi bi-megaphone empty-icon"></i>
+                            目前尚無公告
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -98,7 +94,7 @@
                             {% elif days_diff == 1 %}
                             <span class="badge bg-warning text-dark">明天</span>
                             {% elif days_diff <= 7 %}
-                            <span class="badge bg-info">{{ days_diff }}天後</span>
+                            <span class="badge bg-primary">{{ days_diff }}天後</span>
                             {% else %}
                             <span class="badge bg-secondary">{{ days_diff }}天後</span>
                             {% endif %}
@@ -120,7 +116,10 @@
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted">目前沒有即將到來的活動</p>
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x empty-icon"></i>
+                        目前沒有即將到來的活動
+                    </div>
                 {% endif %}
                 <div class="mt-3">
                     <a href="{{ url_for('events.list_events') }}" class="btn btn-outline-primary w-100"><i class="bi bi-calendar-event me-1"></i>查看所有活動</a>

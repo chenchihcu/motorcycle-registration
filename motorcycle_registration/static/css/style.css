@@ -36,6 +36,14 @@
     --color-nav-surface: #2C2C2C;
     --color-nav-border: #4A4A4A;
 
+    /* Accent (Warm Amber) — 單一品牌強調色，僅用於互動/重點，與炭灰底盤形成冷暖平衡
+       對比已量測：emphasis 白底/白字皆 5.4:1（WCAG AA），bright 僅作非文字填色 */
+    --color-accent: #E07A3F;            /* 非文字填色：圖示、今日標記、圖表 bar、focus ring */
+    --color-accent-emphasis: #A8521C;   /* 連結/文字（白底 5.4:1）+ 主要 CTA 填色（白字 5.4:1） */
+    --color-accent-hover: #8F4615;      /* hover（白字 6.9:1） */
+    --color-accent-active: #76380F;     /* active/pressed（白字 9.0:1） */
+    --color-accent-subtle: rgba(224,122,63,0.12); /* active tab / 選取 / hover 淡底 */
+
     /* Semantic */
     --color-success: #198754;
     --color-danger: #dc3545;
@@ -84,8 +92,10 @@ body {
     flex-direction: column;
 }
 main { flex: 1; }
-a { color: var(--color-primary-action); transition: color var(--transition-fast); }
-a:hover { color: var(--color-primary-action-hover); }
+/* 連結：用暖琥珀強調色與內文（#222）明確區隔，提供「可點擊」訊號（含無底線的標題型連結） */
+a { color: var(--color-accent-emphasis); transition: color var(--transition-fast); }
+a:hover { color: var(--color-accent-hover); }
+a:active { color: var(--color-accent-active); }
 
 /* ---------- 3. 導覽列 ---------- */
 .navbar.bg-dark {
@@ -112,15 +122,17 @@ a:hover { color: var(--color-primary-action-hover); }
     color: #fff;
     background-color: rgba(255,255,255,0.10);
 }
-/* 鍵盤 focus 環：確保 Tab 導覽使用者有可見指示 */
+/* 鍵盤 focus 環：確保 Tab 導覽使用者有可見指示（暖琥珀，深底上對比 4.7:1） */
 .navbar .nav-link:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
 }
+/* active：深底維持白字，以暖琥珀底線標示目前位置（避免深底上低對比的色字） */
 .navbar .nav-link.active {
     color: #fff !important;
-    background-color: rgba(255,255,255,0.15);
-    font-weight: 600;
+    background-color: var(--color-accent-subtle);
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 var(--color-accent);
 }
 
 /* ---------- 4. 卡片 ---------- */
@@ -150,35 +162,35 @@ a:hover { color: var(--color-primary-action-hover); }
 /* 僅深色 header 內的標題用白字；無 bg-dark 的 plain header 沿用深色文字，避免白字壓淺底隱形 */
 .card-header.bg-dark h4, .card-header.bg-dark h5 {
     color: var(--color-text-on-primary);
-    font-weight: 600;
+    font-weight: 700;
 }
 /* plain card-header（無 bg-dark）標題：深色可讀 */
 .card-header:not(.bg-dark) h4,
 .card-header:not(.bg-dark) h5 {
     color: var(--color-text);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* ---------- 5. 按鈕 ---------- */
 .btn {
     border-radius: var(--radius-button);
     transition: all var(--transition-fast);
-    font-weight: 500;
+    font-weight: 400; /* CJK 偏好 400/700：次要按鈕用 400，主要 CTA 個別升 700 */
 }
 
-/* Primary — 純色品牌動作色（白字對比 ≈7:1，達 WCAG AA/AAA） */
+/* Primary — 暖琥珀品牌動作色（白色粗體字對比 5.4:1，達 WCAG AA） */
 .btn-primary {
-    background-color: var(--color-primary-action);
-    border-color: var(--color-primary-action);
-    font-weight: 600;
+    background-color: var(--color-accent-emphasis);
+    border-color: var(--color-accent-emphasis);
+    font-weight: 700;
 }
 .btn-primary:hover, .btn-primary:focus {
-    background-color: var(--color-primary-action-hover);
-    border-color: var(--color-primary-action-hover);
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
 }
 .btn-primary:active {
-    background-color: var(--color-primary-action-active) !important;
-    border-color: var(--color-primary-action-active) !important;
+    background-color: var(--color-accent-active) !important;
+    border-color: var(--color-accent-active) !important;
 }
 .btn-primary:disabled {
     background-color: var(--color-primary-disabled);
@@ -186,15 +198,14 @@ a:hover { color: var(--color-primary-action-hover); }
     opacity: 0.6;
 }
 
-/* Outline Primary */
+/* Outline Primary — 暖琥珀外框，hover 填滿 */
 .btn-outline-primary {
-    color: var(--color-primary-action);
-    border-color: var(--color-primary-action);
-    font-weight: 500;
+    color: var(--color-accent-emphasis);
+    border-color: var(--color-accent-emphasis);
 }
 .btn-outline-primary:hover, .btn-outline-primary:focus {
-    background-color: var(--color-primary-action);
-    border-color: var(--color-primary-action);
+    background-color: var(--color-accent-emphasis);
+    border-color: var(--color-accent-emphasis);
     color: #fff;
 }
 
@@ -268,23 +279,23 @@ a:hover { color: var(--color-primary-action-hover); }
 
 /* Link */
 .btn-link {
-    color: var(--color-primary-action);
+    color: var(--color-accent-emphasis);
 }
 .btn-link:hover {
-    color: var(--color-primary-action-hover);
+    color: var(--color-accent-hover);
 }
 
 /* ---------- 6. 表單 ---------- */
 .form-control:focus, .form-select:focus {
-    border-color: var(--color-primary-action);
-    box-shadow: 0 0 0 0.2rem rgba(74,74,74,0.20);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 0.2rem rgba(224,122,63,0.25);
 }
 .form-control:disabled, .form-control[readonly] {
     background-color: #e9ecef;
     opacity: 0.7;
 }
 .form-label {
-    font-weight: 500;
+    font-weight: 700; /* CJK 偏好 400/700：標籤用 700 提升欄位掃描性 */
     color: var(--color-text);
 }
 
@@ -302,8 +313,8 @@ a:hover { color: var(--color-primary-action-hover); }
 .table thead th {
     background-color: var(--color-primary-surface);
     color: var(--color-text-on-primary);
-    font-weight: 600;
-    border-bottom: 2px solid var(--color-primary-action);
+    font-weight: 700;
+    border-bottom: 2px solid var(--color-accent);
     letter-spacing: 0.5px;
 }
 .table tbody tr {
@@ -383,7 +394,7 @@ a:hover { color: var(--color-primary-action-hover); }
     transition: background-color var(--transition-fast);
 }
 .bulletin-post:hover {
-    background-color: rgba(26,26,46,0.03);
+    background-color: var(--color-selection);
 }
 .bulletin-post.system-post {
     color: var(--color-text-muted);
@@ -400,10 +411,19 @@ a:hover { color: var(--color-primary-action-hover); }
     transition: box-shadow var(--transition-normal);
 }
 .stat-card:hover { box-shadow: var(--shadow-sm); }
+/* 統一統計卡圖示尺寸與色（取代模板裡 fs-2/fs-4 不一致）；暖琥珀點綴增加品牌暖度 */
+.stat-card .stat-icon {
+    display: block;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+}
 .stat-card .stat-number {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-2xl);
     font-weight: 700;
-    color: var(--color-primary-action);
+    line-height: 1.2;
+    color: var(--color-text);
 }
 .stat-card .stat-label {
     font-size: var(--font-size-sm);
@@ -413,19 +433,20 @@ a:hover { color: var(--color-primary-action-hover); }
 
 /* ---------- 11. 分頁 ---------- */
 .page-link {
-    color: var(--color-primary-action);
+    color: var(--color-accent-emphasis);
     transition: all var(--transition-fast);
     border-radius: var(--radius-input);
     margin: 0 2px;
 }
 .page-link:hover {
-    color: var(--color-primary-action-hover);
-    background-color: var(--color-selection);
+    color: var(--color-accent-hover);
+    background-color: var(--color-accent-subtle);
 }
 .page-item.active .page-link {
-    background-color: var(--color-primary-action);
-    border-color: var(--color-primary-action);
-    font-weight: 600;
+    background-color: var(--color-accent-emphasis);
+    border-color: var(--color-accent-emphasis);
+    color: #fff;
+    font-weight: 700;
 }
 
 /* ---------- 12. 頁腳 ---------- */
@@ -435,13 +456,30 @@ a:hover { color: var(--color-primary-action-hover); }
     padding: var(--space-md) 0;
 }
 .footer small { color: rgba(255,255,255,0.70); }
-/* Bootstrap .text-muted 解析為深色，壓在深藍頁腳上幾乎隱形；於頁腳改用淺色（對比 ≈ 6:1，達 WCAG AA） */
+/* Bootstrap .text-muted 解析為深色，壓在深色頁腳上幾乎隱形；於頁腳改用淺色（對比 ≈ 6:1，達 WCAG AA） */
 .footer .text-muted { color: rgba(255,255,255,0.65) !important; }
+/* 深底頁腳上暖琥珀對比不足，連結改以 hover 底線提供可點擊提示 */
+.footer a.text-light:hover { text-decoration: underline !important; }
 
 /* ---------- 13. Badge ---------- */
 .badge {
     border-radius: var(--radius-badge);
-    font-weight: 500;
+    font-weight: 700;
+}
+/* Bootstrap .bg-primary 預設為刺眼藍(#0d6efd)，與炭灰底盤衝突；
+   語意型 primary badge（如「管理員」）改用暖琥珀強調色（白字 5.4:1，達 AA） */
+.badge.bg-primary {
+    background-color: var(--color-accent-emphasis) !important;
+}
+/* 日曆活動 pill：中性炭灰底白字（事件為中性資訊，不需強調色喧賓奪主） */
+.badge.cal-event {
+    background-color: var(--color-primary-surface);
+    color: #fff;
+}
+/* 日曆今日標記：暖琥珀單點強調（白字 5.4:1） */
+.badge.cal-today {
+    background-color: var(--color-accent-emphasis);
+    color: #fff;
 }
 
 /* ---------- 14. 載入狀態（Loading Indicators） ---------- */
@@ -526,9 +564,24 @@ a:hover { color: var(--color-primary-action-hover); }
 .calendar-table thead th.text-danger {
     color: #ff8a93 !important;
 }
-/* 儀表板統計數字：統一品牌強調色，與公告儀表板 .stat-number 視覺一致 */
+/* 儀表板統計數字：與 .stat-number 一致用炭灰強色（圖示才走暖琥珀） */
 .kpi-number {
-    color: var(--color-primary-action);
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: var(--font-size-2xl);
+}
+
+/* 活動列表 Tab（nav-pills）：覆寫 Bootstrap 預設藍，改用暖琥珀系統 */
+.nav-pills .nav-link {
+    color: var(--color-accent-emphasis);
+}
+.nav-pills .nav-link:hover {
+    background-color: var(--color-accent-subtle);
+    color: var(--color-accent-hover);
+}
+.nav-pills .nav-link.active {
+    background-color: var(--color-accent-emphasis);
+    color: #fff;
     font-weight: 700;
 }
 
@@ -537,4 +590,26 @@ a:hover { color: var(--color-primary-action-hover); }
 @media (max-width: 576px) {
     .calendar-table { min-width: 560px; }
     .calendar-table tbody tr { height: 64px !important; }
+}
+
+/* ---------- 18. 黏性側欄（詳情頁右欄跟隨捲動，消除長頁面右側大量留白） ---------- */
+@media (min-width: 992px) {
+    .sticky-sidebar {
+        position: sticky;
+        top: var(--space-md);
+    }
+}
+
+/* ---------- 19. 空狀態（統一 icon + 文字，文案不變） ---------- */
+.empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--space-xl) var(--space-md);
+}
+.empty-state .empty-icon {
+    display: block;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: var(--space-sm);
+    color: var(--color-border);
 }

@@ -39,7 +39,7 @@
                         <div class="d-flex justify-content-between">
                             <small class="fw-bold {% if loop.index == 6 or loop.index == 7 %}text-danger{% endif %} {% if today_date and year == today_date.year and month == today_date.month and day == today_date.day %}text-primary{% endif %}">
                                 {% if today_date and year == today_date.year and month == today_date.month and day == today_date.day %}
-                                <span class="badge bg-primary rounded-pill">{{ day }}</span>
+                                <span class="badge cal-today rounded-pill">{{ day }}</span>
                                 {% else %}
                                 {{ day }}
                                 {% endif %}
@@ -50,7 +50,7 @@
                         <div class="mt-1">
                             {% for ev in day_events[:2] %}
                             <a href="{{ url_for('events.detail', event_id=ev.id) }}"
-                               class="d-block small text-truncate text-decoration-none badge bg-primary mb-1"
+                               class="d-block small text-truncate text-decoration-none badge cal-event mb-1"
                                title="{{ ev.title }}">
                                 {{ ev.title }}
                             </a>
