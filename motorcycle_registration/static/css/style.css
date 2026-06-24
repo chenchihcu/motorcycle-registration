@@ -100,7 +100,7 @@ a:hover { color: var(--color-primary-action-hover); }
 }
 .navbar-brand:hover { opacity: 0.85; }
 
-/* 導覽連結: hover / active */
+/* 導覽連結: hover / active / focus-visible */
 .navbar .nav-link {
     color: rgba(255,255,255,0.75);
     transition: color var(--transition-fast), background-color var(--transition-fast);
@@ -111,6 +111,11 @@ a:hover { color: var(--color-primary-action-hover); }
 .navbar .nav-link:focus {
     color: #fff;
     background-color: rgba(255,255,255,0.10);
+}
+/* 鍵盤 focus 環：確保 Tab 導覽使用者有可見指示 */
+.navbar .nav-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
 }
 .navbar .nav-link.active {
     color: #fff !important;
@@ -506,6 +511,13 @@ a:hover { color: var(--color-primary-action-hover); }
         left: var(--space-sm);
         right: var(--space-sm);
         max-width: none;
+    }
+}
+/* 手機單欄模式：減少活動卡片與螢幕邊緣的 padding */
+@media (max-width: 575.98px) {
+    .events-grid > .col-12 {
+        padding-left: 4px;
+        padding-right: 4px;
     }
 }
 

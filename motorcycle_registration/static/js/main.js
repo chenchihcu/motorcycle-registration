@@ -62,7 +62,15 @@
         el.appendChild(text);
         el.appendChild(closeBtn);
 
-        setTimeout(function () { dismissToast(el); }, 5000);
+        // 自動關閉計時（hover 暫停）
+        var timer = setTimeout(function () { dismissToast(el); }, 5000);
+        el.addEventListener('mouseenter', function () { clearTimeout(timer); });
+        el.addEventListener('mouseleave', function () {
+            if (el.dataset.dismissing !== 'true') {
+                timer = setTimeout(function () { dismissToast(el); }, 5000);
+            }
+        });
+
         return el;
     }
 
@@ -90,6 +98,9 @@
             if (form.method !== 'post' && form.method !== 'POST') return;
             if (form.hasAttribute('data-no-loading')) return;
 
+            // 停用 HTML5 原生驗證氣泡，讓 validation.js 處理樣式統一的錯誤回饋
+            form.setAttribute('novalidate', '');
+
             form.addEventListener('submit', function (e) {
                 // 如果表單已經在送出中，阻止重複送出
                 if (form.dataset.submitting === 'true') {
@@ -97,7 +108,7 @@
                     return;
                 }
 
-                // 確認表單通過瀏覽器驗證，避免驗證失敗卻鎖住畫面
+                // 確認表單通過瀏覽器驗證；不通過時 validation.js 會接手顯示錯誤 + 阻止送出
                 if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
                     return;
                 }
@@ -118,6 +129,18 @@
                     '<div class="spinner"></div>' +
                     '<div class="overlay-text">處理中，請稍候…</div>';
                 document.body.appendChild(overlay);
+
+                // 若 validation.js 在同步事件中阻止送出（如密碼不一致等非 HTML5 檢查），
+                // 在微任務中復原 loading 狀態，避免畫面永久鎖住
+                Promise.resolve().then(function () {
+                    if (e.defaultPrevented) {
+                        form.dataset.submitting = '';
+                        var btn = form.querySelector('[type="submit"].btn-loading');
+                        if (btn) { btn.classList.remove('btn-loading'); btn.disabled = false; }
+                        var ov = document.querySelector('.overlay-loading');
+                        if (ov) ov.remove();
+                    }
+                });
             });
         });
     }
