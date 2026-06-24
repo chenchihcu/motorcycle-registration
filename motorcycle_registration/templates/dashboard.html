@@ -3,7 +3,7 @@
 <div class="row">
     <!-- 左側：公告欄 -->
     <div class="col-lg-8 mb-4">
-        <div class="card shadow nature-card nature-card-mountain">
+        <div class="card shadow">
             <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">公告欄</h4>
                 <form method="GET" action="{{ url_for('bulletin.dashboard') }}" class="d-flex">
@@ -20,7 +20,7 @@
                 <!-- 統計資訊 -->
                 <div class="row mb-4">
                     <div class="col-6">
-                    <div class="stat-card nature-accent nature-accent-maple">
+                    <div class="stat-card">
                         <i class="bi bi-people fs-2"></i>
                         <div class="stat-number">{{ featured_people }}</div>
                         <div class="stat-label">
@@ -33,7 +33,7 @@
                     </div>
                     </div>
                     <div class="col-6">
-                    <div class="stat-card nature-accent nature-accent-forest">
+                    <div class="stat-card">
                         <i class="bi bi-motorcycle fs-2"></i>
                         <div class="stat-number">{{ featured_vehicles }}</div>
                         <div class="stat-label">
@@ -73,7 +73,7 @@
                         </div>
                         {% endfor %}
                     {% else %}
-                        <p class="text-muted text-center py-3 nature-empty nature-empty-mountain" id="emptyBulletin">目前尚無公告</p>
+                        <p class="text-muted text-center py-3" id="emptyBulletin">目前尚無公告</p>
                     {% endif %}
                 </div>
             </div>
@@ -81,7 +81,7 @@
     </div>
     <!-- 右側：即將到來的活動 -->
     <div class="col-lg-4 mb-4">
-        <div class="card shadow raised nature-card nature-card-forest">
+        <div class="card shadow raised">
             <div class="card-header bg-dark text-light">
                 <h4 class="mb-0">即將到來的活動</h4>
             </div>

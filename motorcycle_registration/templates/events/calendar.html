@@ -12,11 +12,11 @@
     </div>
 </div>
 
-<div class="card shadow nature-card nature-card-mountain">
+<div class="card shadow">
     <div class="card-header bg-dark text-light text-center">
         <h4 class="mb-0">{{ year }} 年 {{ month }} 月</h4>
     </div>
-    <div class="card-body p-0">
+    <div class="card-body p-0 calendar-scroll">
         <table class="table table-bordered mb-0 calendar-table">
             <thead class="table-light">
                 <tr>
@@ -34,8 +34,7 @@
                 {% for week in calendar_rows %}
                 <tr style="height: 90px;">
                     {% for day in week %}
-                    <td class="align-top p-1 {% if day == 0 %}bg-light{% endif %}"
-                        {% if day > 0 %}style="cursor:pointer;"{% endif %}>
+                    <td class="align-top p-1 {% if day == 0 %}bg-light{% endif %}">
                         {% if day > 0 %}
                         <div class="d-flex justify-content-between">
                             <small class="fw-bold {% if loop.index == 6 or loop.index == 7 %}text-danger{% endif %} {% if today_date and year == today_date.year and month == today_date.month and day == today_date.day %}text-primary{% endif %}">

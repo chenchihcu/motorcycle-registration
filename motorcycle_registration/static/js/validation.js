@@ -29,20 +29,37 @@
     }
 
     /**
-     * 對單一欄位執行驗證，更新 .is-valid / .is-invalid 狀態與錯誤文字
+     * 確認密碼欄位的等值檢查（HTML5 約束無法表達 EqualTo，需前端補強，
+     * 否則確認密碼不一致時仍會顯示通過、與伺服器結果矛盾）。
+     * 回傳錯誤訊息字串；通過則回傳空字串。
+     */
+    function confirmPasswordError(field) {
+        if (field.name !== 'confirm_password' && field.id !== 'confirm_password') return '';
+        const form = field.form;
+        if (!form) return '';
+        const source = form.querySelector('#new_password') || form.querySelector('#password');
+        if (source && source.value !== field.value) return '密碼不一致';
+        return '';
+    }
+
+    /**
+     * 對單一欄位執行驗證，更新 .is-invalid 狀態與錯誤文字。
+     * 不再加 .is-valid（綠勾）—避免在 EqualTo 等伺服器端規則上顯示假性通過。
+     * 回傳 true 表示通過。
      */
     function validateField(field) {
-        const validity = field.validity;
-        if (validity.valid) {
-            field.classList.remove('is-invalid');
-            field.classList.add('is-valid');
+        const extraError = field.validity.valid ? confirmPasswordError(field) : '';
+        const ok = field.validity.valid && !extraError;
+        if (ok) {
+            field.classList.remove('is-valid', 'is-invalid');
             clearFieldError(field);
         } else {
             field.classList.remove('is-valid');
             field.classList.add('is-invalid');
-            // 顯示瀏覽器原生驗證訊息，說明「如何修正」而非只給紅框
-            setFieldError(field, field.validationMessage || '此欄位填寫有誤');
+            // 說明「如何修正」而非只給紅框
+            setFieldError(field, extraError || field.validationMessage || '此欄位填寫有誤');
         }
+        return ok;
     }
 
     /**
@@ -99,8 +116,7 @@
                 let isValid = true;
 
                 fields.forEach(function (field) {
-                    validateField(field);
-                    if (!field.validity.valid) {
+                    if (!validateField(field)) {
                         isValid = false;
                     }
                 });

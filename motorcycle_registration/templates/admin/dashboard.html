@@ -3,7 +3,7 @@
 <h3 class="mb-4">管理儀表板</h3>
 <div class="row mb-4">
     <div class="col-md-3 col-6 mb-3">
-        <div class="card prominent text-center nature-card nature-card-maple">
+        <div class="card prominent text-center">
             <div class="card-body">
                 <div class="fs-2 fw-bold kpi-number">{{ total_events }}</div>
                 <small class="text-muted">總活動數</small>
@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="col-md-3 col-6 mb-3">
-        <div class="card prominent text-center nature-card nature-card-forest">
+        <div class="card prominent text-center">
             <div class="card-body">
                 <div class="fs-2 fw-bold kpi-number">{{ upcoming_events }}</div>
                 <small class="text-muted">即將到來</small>
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="col-md-3 col-6 mb-3">
-        <div class="card prominent text-center nature-card nature-card-mountain">
+        <div class="card prominent text-center">
             <div class="card-body">
                 <div class="fs-2 fw-bold kpi-number">{{ total_users }}</div>
                 <small class="text-muted">總使用者</small>
@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="col-md-3 col-6 mb-3">
-        <div class="card prominent text-center nature-card nature-card-plant">
+        <div class="card prominent text-center">
             <div class="card-body">
                 <div class="fs-2 fw-bold kpi-number">{{ active_regs }}</div>
                 <small class="text-muted">有效報名</small>
@@ -38,7 +38,7 @@
 <!-- 報名趨勢圖表 -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card shadow nature-card nature-card-waterfall">
+        <div class="card shadow">
             <div class="card-header bg-dark text-light">
                 <h5 class="mb-0"><i class="bi bi-graph-up me-1"></i>近 30 天報名趨勢</h5>
             </div>
@@ -51,7 +51,7 @@
 
 <div class="row">
     <div class="col-md-6 mb-4">
-        <div class="card shadow nature-card nature-card-forest">
+        <div class="card shadow">
             <div class="card-header bg-dark text-light">
                 <h5 class="mb-0">最新活動</h5>
             </div>
@@ -70,7 +70,7 @@
         </div>
     </div>
     <div class="col-md-6 mb-4">
-        <div class="card shadow nature-card nature-card-mountain">
+        <div class="card shadow">
             <div class="card-header bg-dark text-light">
                 <h5 class="mb-0">最新公告</h5>
             </div>
@@ -91,7 +91,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <div class="card shadow nature-card nature-card-plant">
+        <div class="card shadow">
             <div class="card-body">
                 <div class="d-flex flex-wrap gap-2">
                     <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>建立活動</a>
@@ -166,8 +166,8 @@
                 datasets: [{
                     label: '報名人數',
                     data: data.values,
-                    backgroundColor: 'rgba(26, 26, 46, 0.6)',
-                    borderColor: 'rgba(26, 26, 46, 1)',
+                    backgroundColor: 'rgba(74, 74, 74, 0.6)',
+                    borderColor: 'rgba(74, 74, 74, 1)',
                     borderWidth: 1,
                     borderRadius: 4,
                 }]

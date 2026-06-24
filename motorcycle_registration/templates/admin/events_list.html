@@ -94,9 +94,10 @@
     {% endfor %}
 </div>
 {% else %}
-<div class="text-center py-5 nature-empty nature-empty-mountain">
-    <p class="text-muted">目前沒有任何活動</p>
-    <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary btn-nature-hover">建立第一個活動</a>
+<div class="text-center py-5">
+    <i class="bi bi-calendar-plus display-3 text-muted"></i>
+    <p class="text-muted mt-3">目前沒有任何活動</p>
+    <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary">建立第一個活動</a>
 </div>
 {% endif %}
 {% endblock %}

@@ -3,7 +3,7 @@
 <h3 class="mb-4">公告管理</h3>
 <div class="row">
     <div class="col-lg-5 mb-4">
-        <div class="card shadow nature-card nature-card-mountain">
+        <div class="card shadow">
             <div class="card-body">
                 <h5>發布新公告</h5>
                 <form method="POST">
@@ -46,7 +46,10 @@
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted nature-empty nature-empty-mountain">尚無公告</p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-megaphone display-3 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0">尚無公告</p>
+                    </div>
                 {% endif %}
             </div>
         </div>

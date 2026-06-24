@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row">
     <div class="col-lg-8">
-        <div class="card shadow mb-4 nature-card nature-card-forest">
+        <div class="card shadow mb-4">
             <div class="card-body">
                 <h3 class="card-title">{{ event.title }}</h3>
                 <p class="text-muted">
@@ -16,21 +16,21 @@
                 </div>
                 <div class="row g-2 mb-4">
                     <div class="col-4">
-                        <div class="stat-card nature-accent nature-accent-maple">
+                        <div class="stat-card">
                             <i class="bi bi-people fs-4"></i>
                             <div class="stat-number">{{ total_people }}</div>
                             <div class="stat-label">已報名人數</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="stat-card nature-accent nature-accent-forest">
+                        <div class="stat-card">
                             <i class="bi bi-motorcycle fs-4"></i>
                             <div class="stat-number">{{ total_vehicles }}</div>
                             <div class="stat-label">車輛數</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="stat-card nature-accent nature-accent-waterfall">
+                        <div class="stat-card">
                             <i class="bi bi-check-circle fs-4"></i>
                             <div class="stat-number">{{ event.registrations.filter_by(cancelled_at=None).count() }}</div>
                             <div class="stat-label">已報名</div>
@@ -120,7 +120,7 @@
         </div>
         <!-- Google Maps 預覽 -->
         {% if event.google_maps_embed_url %}
-        <div class="card shadow mb-4 nature-card nature-card-mountain">
+        <div class="card shadow mb-4">
             <div class="card-header">
                 <h5 class="mb-0">路線預覽</h5>
             </div>
@@ -136,7 +136,7 @@
         {% endif %}
         <!-- 路線途經點 -->
         {% if event.route_waypoints %}
-        <div class="card shadow mb-4 nature-card nature-card-waterfall">
+        <div class="card shadow mb-4">
             <div class="card-header">
                 <h5 class="mb-0">路線表</h5>
             </div>
@@ -167,7 +167,7 @@
 
         <!-- 報名者清單 -->
         {% if attendee_list %}
-        <div class="card shadow mb-4 nature-card nature-card-petal">
+        <div class="card shadow mb-4">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-people me-1"></i>報名車友（{{ total_vehicles }} 車）</h5>
             </div>
@@ -227,7 +227,7 @@
         {% endif %}
     </div>
     <div class="col-lg-4">
-        <div class="card shadow mb-4 nature-card nature-card-plant">
+        <div class="card shadow mb-4">
             <div class="card-body">
                 <h5>活動資訊</h5>
                 <ul class="list-unstyled">
@@ -267,7 +267,8 @@ function confirmRegistration(eventId, eventTitle, eventDate, userName) {
         confirmClass: 'btn-primary'
     }).then(function (confirmed) {
         if (confirmed) {
-            document.getElementById('registerForm-' + eventId).submit();
+            // requestSubmit() 會觸發 submit 事件 → 載入遮罩 + 防重複送出生效（submit() 不會）
+            document.getElementById('registerForm-' + eventId).requestSubmit();
         }
     });
 }

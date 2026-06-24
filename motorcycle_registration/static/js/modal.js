@@ -155,10 +155,10 @@
                             window.location.href = href;
                         }
                     } else {
-                        // 按鈕在表單內：提交所屬表單（保留 CSRF token）
+                        // 按鈕在表單內：提交所屬表單（requestSubmit 觸發 submit 事件 → 載入遮罩生效）
                         var parentForm = target.closest('form');
                         if (parentForm) {
-                            parentForm.submit();
+                            parentForm.requestSubmit();
                         }
                     }
                 }
@@ -187,7 +187,8 @@
             confirmClass: 'btn-danger'
         }).then(function (confirmed) {
             if (confirmed) {
-                form.submit();
+                // requestSubmit() 會觸發 submit 事件 → 載入遮罩 + 防重複送出生效（submit() 不會）
+                form.requestSubmit();
             }
         });
     };
