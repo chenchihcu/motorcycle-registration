@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.svg') }}" type="image/svg+xml">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    <meta name="theme-color" content="#1a1a2e">
+    <meta name="theme-color" content="#2C2C2C">
 </head>
-<body class="nature-bg">
+<body>
     {% set active_endpoint = request.endpoint or '' %}
     <!-- 導覽列 -->
-    <nav class="navbar navbar-expand-xl navbar-dark bg-dark nature-nav">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
         <div class="container">
             {% if active_endpoint != 'bulletin.dashboard' %}
             <a class="nav-link d-inline-block me-1" href="{{ url_for('bulletin.dashboard') }}" id="navBackBtn" aria-label="返回上一頁" title="返回上一頁"><i class="bi bi-arrow-left fs-5"></i></a>
@@ -108,7 +108,7 @@
     </main>
 
     <!-- 頁尾 -->
-    <footer class="footer bg-dark text-light py-4 mt-auto nature-footer">
+    <footer class="footer bg-dark text-light py-4 mt-auto">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-2 mb-md-0">

@@ -1,17 +1,17 @@
 /* ============================================================
-   重機車隊報名系統 — 設計系統樣式表
-   主題：沈穩深色系（明亮背景 + 深色導覽/按鈕/頁腳）
-   Token 來源：DESIGN.md v1.0
-   ============================================================ */
+    漢堡車隊報名系統 — 設計系統樣式表
+    主題：Charcoal（木炭灰沈穩色系）
+    風格：極簡、可掃描、中性（移除裝飾層，清晰 > 裝飾）
+    ============================================================ */
 
 /* ---------- 1. 設計 Token (CSS 變數) ---------- */
 :root {
-    /* Primary */
-    --color-primary: #1a1a2e;
-    --color-primary-hover: #0f0f1e;
-    --color-primary-active: #070710;
-    --color-primary-disabled: #6c6c80;
-    --color-primary-surface: #2c2c3e;
+    /* Primary (Charcoal Gray) */
+    --color-primary: #2C2C2C;
+    --color-primary-hover: #1F1F1F;
+    --color-primary-active: #121212;
+    --color-primary-disabled: #8A8A8A;
+    --color-primary-surface: #383838;
 
     /* Surface */
     --color-surface: #ffffff;
@@ -23,21 +23,18 @@
     --color-text-on-primary: #ffffff;
 
     /* Borders & Accent */
-    --color-border: #e0e0e0;
-    --color-accent: #a0a0a0;
+    --color-border: #D4D4D4;
+    --color-accent: #8A8A8A;
 
     /* Role colors (actions, selection, nav) */
-    --color-primary-action: #3a4d6b;
-    --color-primary-action-hover: #2c3d59;
-    --color-primary-action-active: #1f2d45;
-    /* 漸層亮端：白字對比 ≈ 4.8:1，達 WCAG AA（一般文字 4.5:1） */
-    --color-primary-action-light: #3576b0;
-    --gradient-primary-action: linear-gradient(135deg, var(--color-primary-action), var(--color-primary-action-light));
-    --color-secondary-action: #5a6b7c;
-    --color-secondary-action-hover: #4a5b6c;
-    --color-selection: rgba(58,77,107,0.10);
-    --color-nav-surface: #1a1a2e;
-    --color-nav-border: #3a4d6b;
+    --color-primary-action: #4A4A4A;
+    --color-primary-action-hover: #3A3A3A;
+    --color-primary-action-active: #2A2A2A;
+    --color-secondary-action: #6B7280;
+    --color-secondary-action-hover: #5A5F6B;
+    --color-selection: rgba(74,74,74,0.10);
+    --color-nav-surface: #2C2C2C;
+    --color-nav-border: #4A4A4A;
 
     /* Semantic */
     --color-success: #198754;
@@ -75,26 +72,6 @@
     /* Transitions */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.3s ease;
-
-    /* ========== Nature Elements (v1.1) ========== */
-    /* Nature Colors */
-    --color-nature-forest: #2d5a3d;
-    --color-nature-mountain: #3a4d6b;
-    --color-nature-maple: #b85c3a;
-    --color-nature-plant: #4a7c59;
-    --color-nature-petal: #d4a5b8;
-    --color-nature-waterfall: #4a90d9;
-
-    /* Nature Gradients */
-    --gradient-forest: linear-gradient(135deg, #2d5a3d, #4a7c59);
-    --gradient-mountain: linear-gradient(135deg, #3a4d6b, #4a90d9);
-    --gradient-maple: linear-gradient(135deg, #b85c3a, #d4a5b8);
-    --gradient-waterfall: linear-gradient(135deg, #4a90d9, #c8e6f5);
-
-    /* SVG Patterns (data URI) */
-    --pattern-mist: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='20' cy='30' r='15' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.06'/%3E%3Ccircle cx='60' cy='50' r='25' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.05'/%3E%3Ccircle cx='100' cy='20' r='10' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.06'/%3E%3Ccircle cx='40' cy='90' r='20' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.05'/%3E%3Ccircle cx='90' cy='80' r='12' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.06'/%3E%3C/svg%3E");
-    --pattern-leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M25 70 Q30 55 40 65 Q35 75 25 70Z' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.25'/%3E%3Cpath d='M70 30 Q78 20 85 28 Q80 38 70 30Z' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.2'/%3E%3Cpath d='M95 85 Q100 72 108 80 Q102 90 95 85Z' fill='none' stroke='currentColor' stroke-width='0.5' opacity='0.3'/%3E%3C/svg%3E");
-    --pattern-ripples: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='15' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.3'/%3E%3Ccircle cx='60' cy='60' r='25' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.2'/%3E%3Ccircle cx='60' cy='60' r='35' fill='none' stroke='currentColor' stroke-width='0.3' opacity='0.15'/%3E%3C/svg%3E");
 }
 
 /* ---------- 2. 基礎全域 ---------- */
@@ -184,22 +161,22 @@ a:hover { color: var(--color-primary-action-hover); }
     font-weight: 500;
 }
 
-/* Primary — 使用山色漸層凸顯主要行動（亮端已調暗以確保白字對比） */
+/* Primary — 純色品牌動作色（白字對比 ≈7:1，達 WCAG AA/AAA） */
 .btn-primary {
-    background: var(--gradient-primary-action);
+    background-color: var(--color-primary-action);
     border-color: var(--color-primary-action);
     font-weight: 600;
 }
 .btn-primary:hover, .btn-primary:focus {
-    background: linear-gradient(135deg, var(--color-primary-action-hover), var(--color-primary-action));
+    background-color: var(--color-primary-action-hover);
     border-color: var(--color-primary-action-hover);
 }
 .btn-primary:active {
-    background: var(--color-primary-action-active) !important;
+    background-color: var(--color-primary-action-active) !important;
     border-color: var(--color-primary-action-active) !important;
 }
 .btn-primary:disabled {
-    background: var(--color-primary-disabled);
+    background-color: var(--color-primary-disabled);
     border-color: var(--color-primary-disabled);
     opacity: 0.6;
 }
@@ -295,7 +272,7 @@ a:hover { color: var(--color-primary-action-hover); }
 /* ---------- 6. 表單 ---------- */
 .form-control:focus, .form-select:focus {
     border-color: var(--color-primary-action);
-    box-shadow: 0 0 0 0.2rem rgba(58,77,107,0.20);
+    box-shadow: 0 0 0 0.2rem rgba(74,74,74,0.20);
 }
 .form-control:disabled, .form-control[readonly] {
     background-color: #e9ecef;
@@ -331,7 +308,7 @@ a:hover { color: var(--color-primary-action-hover); }
     background-color: var(--color-selection);
 }
 .table-striped > tbody > tr:nth-of-type(odd) > * {
-    --bs-table-accent-bg: rgba(58,77,107,0.04);
+    --bs-table-accent-bg: rgba(74,74,74,0.04);
     color: var(--color-text);
 }
 /* 表格內車牌等 <code>：用中性內文色，避免 Bootstrap 預設粉紅誤導為連結/錯誤 */
@@ -441,7 +418,7 @@ a:hover { color: var(--color-primary-action-hover); }
     background-color: var(--color-selection);
 }
 .page-item.active .page-link {
-    background: var(--gradient-primary-action);
+    background-color: var(--color-primary-action);
     border-color: var(--color-primary-action);
     font-weight: 600;
 }
@@ -530,239 +507,9 @@ a:hover { color: var(--color-primary-action-hover); }
         right: var(--space-sm);
         max-width: none;
     }
-    /* 行動版調整 (stat-card 左側條紋已由 border-left 取代無需隱藏) */
 }
 
-/* ============================================================
-   16. 自然元素裝飾 — Nature Decorative Utilities (v1.1)
-   主題：山林瀑布楓葉植物花草
-   Token 來源：DESIGN.md §7
-   ============================================================ */
-
-/* ---------- 16a. Keyframes (自然動畫) ---------- */
-@keyframes natureFall {
-    0%   { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-    20%  { opacity: 1; }
-    80%  { opacity: 0.8; }
-    100% { transform: translateY(10px) rotate(15deg); opacity: 0; }
-}
-@keyframes natureRipple {
-    0%   { transform: scale(0.8); opacity: 0.6; }
-    100% { transform: scale(1.2); opacity: 0; }
-}
-@keyframes natureVein {
-    0%   { transform: scaleX(0); opacity: 0; }
-    50%  { opacity: 0.6; }
-    100% { transform: scaleX(1); opacity: 1; }
-}
-
-/* ---------- 16b. Body 水印 (.nature-bg) ---------- */
-body.nature-bg {
-    background-image: var(--pattern-mist);
-    background-repeat: repeat;
-    background-size: 240px 240px;
-    background-attachment: fixed;
-}
-
-/* ---------- Navbar 極淡山嵐漸層 ---------- */
-.navbar.bg-dark.nature-nav::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gradient-mountain);
-    opacity: 0.03;
-    pointer-events: none;
-}
-.navbar.bg-dark {
-    position: relative;
-    overflow: visible;
-}
-
-/* ---------- Footer 極淡楓葉 pattern ---------- */
-.footer.nature-footer::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--pattern-leaves);
-    background-repeat: repeat;
-    background-size: 180px 180px;
-    opacity: 0.02;
-    pointer-events: none;
-}
-.footer {
-    position: relative;
-    overflow: hidden;
-}
-
-/* ---------- 16c. 卡片自然光暈 (.nature-card) ---------- */
-.nature-card {
-    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
-}
-.nature-card:hover {
-    box-shadow: 0 0 12px var(--nature-glow, rgba(45,90,61,0.2));
-}
-/* 6 種語意變體 */
-.nature-card-forest { --nature-glow: rgba(45,90,61,0.25); }
-.nature-card-mountain { --nature-glow: rgba(58,77,107,0.25); }
-.nature-card-maple { --nature-glow: rgba(184,92,58,0.25); }
-.nature-card-plant { --nature-glow: rgba(74,124,89,0.25); }
-.nature-card-petal { --nature-glow: rgba(212,165,184,0.3); }
-.nature-card-waterfall { --nature-glow: rgba(74,144,217,0.25); }
-
-/* ---------- 16d. 空狀態插圖容器 (.nature-empty) ---------- */
-.nature-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    text-align: center;
-}
-.nature-empty::before {
-    display: block;
-    content: '';
-    width: 120px;
-    height: 120px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    margin-bottom: var(--space-md);
-    opacity: 0.35;
-}
-.nature-empty-mountain::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cpath d='M10 70 L35 25 L55 50 L70 30 L95 70Z' fill='none' stroke='%233a4d6b' stroke-width='1.5' stroke-linejoin='round' opacity='0.6'/%3E%3Cpath d='M55 70 L75 40 L85 55 L100 35 L115 70Z' fill='none' stroke='%233a4d6b' stroke-width='1' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E");
-}
-.nature-empty-forest::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cpath d='M20 85 L40 10 L60 85Z' fill='none' stroke='%232d5a3d' stroke-width='1.5' stroke-linejoin='round' opacity='0.5'/%3E%3Cpath d='M50 85 L70 20 L90 85Z' fill='none' stroke='%234a7c59' stroke-width='1.2' stroke-linejoin='round' opacity='0.4'/%3E%3Cpath d='M35 95 L60 35 L85 95Z' fill='none' stroke='%232d5a3d' stroke-width='0.8' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E");
-}
-.nature-empty-waterfall::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 120'%3E%3Cpath d='M20 15 L20 105' stroke='%234a90d9' stroke-width='2' stroke-linecap='round' opacity='0.4'/%3E%3Cpath d='M30 25 L30 110' stroke='%234a90d9' stroke-width='1.5' stroke-linecap='round' opacity='0.3'/%3E%3Cpath d='M45 20 L45 100' stroke='%234a90d9' stroke-width='1.2' stroke-linecap='round' opacity='0.25'/%3E%3Ccircle cx='25' cy='80' r='3' fill='%234a90d9' opacity='0.2'/%3E%3Ccircle cx='40' cy='90' r='2' fill='%234a90d9' opacity='0.2'/%3E%3C/svg%3E");
-}
-.nature-empty-maple::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M40 75 L38 42 L12 45 L0 30 L20 18 L38 20 L40 0 L42 20 L60 18 L80 30 L68 45 L42 42Z' fill='none' stroke='%23b85c3a' stroke-width='1.2' stroke-linejoin='round' opacity='0.45'/%3E%3Cpath d='M40 75 L40 42' stroke='%23b85c3a' stroke-width='1' opacity='0.3'/%3E%3C/svg%3E");
-}
-
-/* ---------- 16e. 載入動畫容器 (.nature-loading) ---------- */
-.nature-loading {
-    position: relative;
-    pointer-events: none;
-}
-.nature-loading-leaf::after {
-    content: '';
-    display: inline-block;
-    width: 1.2em;
-    height: 1.2em;
-    margin-left: var(--space-sm);
-    background: no-repeat center/contain;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 22 Q8 14 14 12 Q16 8 20 6 Q18 12 14 14 Q16 18 10 22Z' fill='%234a7c59' opacity='0.6'/%3E%3C/svg%3E");
-    animation: natureFall 1.2s ease-in-out infinite;
-    vertical-align: middle;
-}
-.nature-loading-ripple {
-    position: relative;
-}
-.nature-loading-ripple::before,
-.nature-loading-ripple::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 32px;
-    height: 32px;
-    margin: -16px 0 0 -16px;
-    border: 2px solid var(--color-nature-waterfall);
-    border-radius: 50%;
-    animation: natureRipple 1.5s ease-out infinite;
-}
-.nature-loading-ripple::after {
-    animation-delay: 0.5s;
-}
-
-/* ---------- 16f. 自然點綴邊框 (.nature-accent) ---------- */
-.nature-accent {
-    border-left: 3px solid var(--nature-accent-color, var(--color-nature-forest));
-}
-.nature-accent-forest { --nature-accent-color: var(--color-nature-forest); }
-.nature-accent-mountain { --nature-accent-color: var(--color-nature-mountain); }
-.nature-accent-maple { --nature-accent-color: var(--color-nature-maple); }
-.nature-accent-plant { --nature-accent-color: var(--color-nature-plant); }
-.nature-accent-petal { --nature-accent-color: var(--color-nature-petal); }
-.nature-accent-waterfall { --nature-accent-color: var(--color-nature-waterfall); }
-
-/* ---------- 16g. 表格 header 自然左側色條 ---------- */
-.nature-accent th {
-    border-left: 3px solid var(--nature-accent-color, var(--color-nature-forest));
-}
-/* 預設表格 header 自然左側邊框 */
-.table thead th {
-    border-left: 3px solid var(--color-nature-forest);
-    border-bottom: 2px solid var(--color-primary-hover);
-}
-.table thead th:first-child {
-    border-left: none;
-}
-
-/* ---------- 16h. overlay 自然載入 ---------- */
-.overlay-loading.nature-loading-vein::before {
-    display: block;
-    content: '';
-    width: 80px;
-    height: 4px;
-    background: var(--gradient-forest);
-    border-radius: 4px;
-    animation: natureVein 1s ease-in-out infinite alternate;
-}
-
-/* ---------- 16i. 按鈕自然 hover 光暈 ---------- */
-.btn.btn-nature-hover:hover {
-    box-shadow: 0 0 8px var(--nature-glow, rgba(45,90,61,0.3));
-}
-/* 預設按鈕 hover 自然光暈 */
-.btn-primary:hover,
-.btn-outline-primary:hover {
-    box-shadow: 0 0 6px rgba(45,90,61,0.25);
-}
-.btn-success:hover {
-    box-shadow: 0 0 6px rgba(74,124,89,0.3);
-}
-.btn-danger:hover {
-    box-shadow: 0 0 6px rgba(184,92,58,0.3);
-}
-
-/* ---------- 16j. 分頁 hover 漸層 ---------- */
-.page-link.page-nature-hover:hover,
-.page-item:not(.active) .page-link:hover {
-    background: var(--gradient-primary-action);
-    color: #fff;
-    border-color: var(--color-nature-mountain);
-}
-
-/* ---------- 16k. 統計卡片左側條紋 ---------- */
-.stat-card.nature-accent {
-    border-left-width: 4px;
-}
-.stat-card {
-    position: relative;
-}
-
-/* ---------- 16l. 下拉選單 hover ---------- */
-.dropdown-item.nature-accent:hover {
-    background: var(--gradient-forest);
-    color: #fff;
-}
-
-/* ---------- 16m. Badge 自然色點綴 ---------- */
-.badge.bg-primary {
-    background: var(--gradient-primary-action) !important;
-}
-.badge.bg-success {
-    background: linear-gradient(135deg, var(--color-nature-forest), var(--color-nature-plant)) !important;
-}
-.badge.bg-danger {
-    background: linear-gradient(135deg, var(--color-nature-maple), #dc3545) !important;
-}
-
-/* ---------- 17. P2 一致性與對比微調 ---------- */
+/* ---------- 16. 一致性與對比微調 ---------- */
 /* 日曆週末標題：紅字壓深色 header 對比不足，改用較亮的紅（對比 ≈ 5.5:1，達 AA） */
 .calendar-table thead th.text-danger {
     color: #ff8a93 !important;
@@ -771,4 +518,11 @@ body.nature-bg {
 .kpi-number {
     color: var(--color-primary-action);
     font-weight: 700;
+}
+
+/* ---------- 17. 日曆 RWD（手機橫向捲動，避免 7 欄擠壓） ---------- */
+.calendar-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 576px) {
+    .calendar-table { min-width: 560px; }
+    .calendar-table tbody tr { height: 64px !important; }
 }
