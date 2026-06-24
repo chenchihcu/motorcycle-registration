@@ -52,6 +52,18 @@
 | --color-nav-surface | #2C2C2C | 導覽列底色 |
 | --color-nav-border | #4A4A4A | 導覽列邊框 |
 
+### Accent（暖琥珀強調色 / Warm Amber）
+
+> 單一品牌強調色，僅用於「互動 / 重點」，與炭灰底盤形成冷暖平衡；不入侵 nav / footer 等結構底色。
+
+| Token | Hex | 用途 | 對比 |
+|---|---|---|---|
+| --color-accent | #E07A3F | 非文字填色：圖示、日曆今日標記、圖表 bar、focus ring | 僅作填色 |
+| --color-accent-emphasis | #A8521C | 連結 / 強調文字、主要 CTA 填色 | 白底 / 白字 5.4:1（AA） |
+| --color-accent-hover | #8F4615 | 連結 / CTA hover | 白字 6.9:1 |
+| --color-accent-active | #76380F | 連結 / CTA active | 白字 9.0:1 |
+| --color-accent-subtle | rgba(224,122,63,0.12) | active tab / 選取 / hover 淡底 | — |
+
 ### Semantic（語意色 — 沿用 Bootstrap 相容）
 
 | Token | Hex | 用途 |
@@ -184,3 +196,4 @@ font-family: -apple-system, "Microsoft JhengHei", "Noto Sans TC", sans-serif;
 | 2026-06-23 | v1.1 | 新增第 7 章自然系色彩與裝飾 token |
 | 2026-06-23 | v1.2 | UI/UX 稽核修正 |
 | 2026-06-24 | v2.0 | 主題改版：從海軍藍 (#1a1a2e) 更改為 Charcoal (#2C2C2C) 灰色系 |
+| 2026-06-24 | v2.1 | 導入暖琥珀強調色（連結 / CTA / active / focus / 圖表 / 日曆今日標記）；連結改用強調色提升可辨識度；統計卡圖示統一並上色；移除詳情頁重複統計卡 |

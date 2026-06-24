@@ -117,16 +117,17 @@
         </ul>
     </nav>
 {% else %}
-    <div class="text-center py-5">
-        <p class="text-muted">
+    <div class="empty-state">
+        <i class="bi bi-calendar-x empty-icon"></i>
+        <div>
             {% if current_status == 'upcoming' %}
             目前沒有進行中的活動
             {% elif current_status == 'past' %}
             目前沒有歷史活動
             {% endif %}
-        </p>
+        </div>
         {% if current_user.is_authenticated and current_user.role == 'admin' %}
-        <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary">建立第一個活動</a>
+        <a href="{{ url_for('admin.events_new') }}" class="btn btn-primary mt-3">建立第一個活動</a>
         {% endif %}
     </div>
 {% endif %}

@@ -15,25 +15,18 @@
                     <p>{{ event.description or '尚無描述' }}</p>
                 </div>
                 <div class="row g-2 mb-4">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="stat-card">
-                            <i class="bi bi-people fs-4"></i>
+                            <i class="bi bi-people stat-icon"></i>
                             <div class="stat-number">{{ total_people }}</div>
                             <div class="stat-label">已報名人數</div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="stat-card">
-                            <i class="bi bi-motorcycle fs-4"></i>
+                            <i class="bi bi-motorcycle stat-icon"></i>
                             <div class="stat-number">{{ total_vehicles }}</div>
                             <div class="stat-label">車輛數</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="stat-card">
-                            <i class="bi bi-check-circle fs-4"></i>
-                            <div class="stat-number">{{ event.registrations.filter_by(cancelled_at=None).count() }}</div>
-                            <div class="stat-label">已報名</div>
                         </div>
                     </div>
                 </div>
@@ -227,7 +220,7 @@
         {% endif %}
     </div>
     <div class="col-lg-4">
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 sticky-sidebar">
             <div class="card-body">
                 <h5>活動資訊</h5>
                 <ul class="list-unstyled">
