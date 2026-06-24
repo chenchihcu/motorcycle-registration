@@ -151,7 +151,7 @@ def create_app():
         import datetime
         from models import Message
         ctx = {
-            "app_name": app.config.get("APP_NAME", "重機車隊報名系統"),
+            "app_name": app.config.get("APP_NAME", "漢堡車隊報名系統"),
             "current_year": datetime.datetime.now().year,
         }
         # 未讀通知計數（全域 navbar badge）
