@@ -31,3 +31,10 @@ Thumbs.db
 
 # Project-specific ignores
 __pycache__/
+
+# UI/UX audit screenshots & scratch files (local only, not version-controlled)
+/v-*.png
+/r-*.png
+/live-*.png
+/verify-*.png
+/ok.txt
